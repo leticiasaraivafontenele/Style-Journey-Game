@@ -26,10 +26,6 @@ const startServer = async () => {
     server.on('error', (error: NodeJS.ErrnoException) => {
       if (error.code === 'EADDRINUSE') {
         console.error(`\n❌ ERROR: Port ${serverConfig.port} is already in use!`);
-        console.error(`\n💡 Solutions:`);
-        console.error(`   1. Stop the other process using this port`);
-        console.error(`   2. Change the PORT in your .env file`);
-        console.error(`   3. Kill the process: lsof -ti:${serverConfig.port} | xargs kill -9\n`);
         process.exit(1);
       } else {
         console.error("Server error:", error);
