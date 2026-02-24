@@ -1,62 +1,204 @@
 # Backend - Style Journey Game
 
-Backend desenvolvido em TypeScript com Express, PostgreSQL e Sequelize.
+API REST para o jogo educacional Style Journey, focado no aprendizado de CSS3.
 
-## Estrutura do Projeto
+## 🏗️ Arquitetura
 
-```
-backend/
-├── src/              # Código-fonte TypeScript
-│   ├── index.ts      # Ponto de entrada da aplicação
-│   ├── auth/         # Autenticação e autorização
-│   ├── controller/   # Controladores das rotas
-│   ├── db/           # Configuração do banco de dados
-│   ├── model/        # Modelos Sequelize
-│   ├── route/        # Definição de rotas
-│   └── utils/        # Utilitários
-├── dist/             # Código JavaScript compilado
-└── tsconfig.json     # Configuração do TypeScript
-```
+O backend segue o padrão de **Arquitetura em Camadas** com ORM Sequelize:
 
-## Comandos Disponíveis
+- **Controllers**: Lidam com requisições HTTP
+- **Services**: Implementam lógica de negócio
+- **Repositories**: Gerenciam acesso ao banco de dados via ORM
+- **Models**: Definem entidades do Sequelize
+
+📖 Veja [ARCHITECTURE.md](./ARCHITECTURE.md) para detalhes completos da arquitetura.
+
+## 🚀 Configuração e Execução
+
+### Pré-requisitos
+
+- Node.js 18+
+- PostgreSQL 12+
+- npm ou yarn
+
+### Instalação
 
 ```bash
 # Instalar dependências
 npm install
 
-# Modo desenvolvimento (com hot-reload)
+# Configurar variáveis de ambiente
+cp .env.example .env
+# Edite o arquivo .env com suas configurações
+```
+
+### Executar
+
+```bash
+# Desenvolvimento (com hot reload)
 npm run dev
 
-# Compilar TypeScript para JavaScript
+# Compilar TypeScript
 npm run build
 
-# Executar em produção (após build)
+# Produção
 npm start
 ```
 
-## Tecnologias
+## 🗄️ Banco de Dados
 
-- **TypeScript** - Linguagem de programação
-- **Express** - Framework web
-- **Sequelize** - ORM para PostgreSQL
-- **PostgreSQL** - Banco de dados
-- **JWT** - Autenticação com tokens
-- **bcryptjs** - Hash de senhas
+### ORM Sequelize
 
-## API Endpoints
+O projeto usa **Sequelize** como ORM para PostgreSQL. Benefícios:
+- ✅ Proteção contra SQL Injection
+- ✅ Validações automáticas
+- ✅ Suporte a relacionamentos
+- ✅ Migrações de schema
+- ✅ TypeScript support
 
-- `POST /api/register` - Registro de usuário
-- `POST /api/login` - Login de usuário
-- `POST /api/refreshtoken` - Renovar token de acesso
-- `POST /api/logout` - Logout de usuário
-- `POST /api/profile` - Perfil do usuário (requer autenticação)
+### Criar o banco de dados
 
-## Configuração do Banco de Dados
-
-Certifique-se de ter o PostgreSQL instalado e criar o banco de dados:
-
-```sql
+```bash
+# PostgreSQL
+psql -U postgres
 CREATE DATABASE cssjourney_db;
+\q
 ```
 
-As credenciais padrão estão configuradas em `src/index.ts`. Para produção, use variáveis de ambiente.
+O Sequelize criará as tabelas automaticamente na primeira execução.
+
+## 📡 Endpoints da API
+
+### Autenticação
+
+| Método | Endpoint | Descrição | Auth |
+|--------|----------|-----------|------|
+| POST | `/api/register` | Registrar novo usuário | ❌ |
+| POST | `/api/login` | Login de usuário | ❌ |
+| POST | `/api/refreshtoken` | Renovar access token | ❌ |
+| POST | `/api/logout` | Logout de usuário | ❌ |
+| POST | `/api/profile` | Obter perfil do usuário | ✅ |
+
+### Exemplo de Requisição
+
+**Registro:**
+```bash
+curl -X POST http://localhost:5000/api/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "johndoe",
+    "email": "john@example.com",
+    "password": "securepassword123"
+  }'
+```
+
+**Login:**
+```bash
+curl -X POST http://localhost:5000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "johndoe",
+    "password": "securepassword123"
+  }'
+```
+
+## 🔒 Segurança
+
+- Senhas criptografadas com bcrypt (salt rounds: 10)
+- JWT para autenticação (Access Token: 15min, Refresh Token: 7 dias)
+- HttpOnly cookies para Refresh Tokens
+- Secrets gerenciados via variáveis de ambiente
+
+## 📁 Estrutura de Diretórios
+
+```
+backend/
+├── src/
+│   ├── config/          # Configurações (DB, JWT, ENV)
+│   ├── repository/      # Camada de acesso ao banco (ORM)
+│   ├── service/         # Lógica de negócio
+│   ├── controller/      # Handlers de requisições HTTP
+│   ├── model/           # Modelos Sequelize
+│   ├── db/              # Conexão com banco
+│   ├── auth/            # Autenticação e autorização
+│   ├── route/           # Rotas da API
+│   └── index.ts         # Entry point
+├── dist/                # Código compilado (gerado)
+├── .env                 # Variáveis de ambiente (não commitado)
+├── .env.example         # Template de variáveis de ambiente
+├── package.json
+├── tsconfig.json
+└── ARCHITECTURE.md      # Documentação da arquitetura
+```
+
+## 🛠️ Tecnologias
+
+- **Runtime**: Node.js com TypeScript
+- **Framework**: Express.js
+- **ORM**: Sequelize
+- **Banco de Dados**: PostgreSQL
+- **Autenticação**: JWT (jsonwebtoken)
+- **Criptografia**: bcryptjs
+- **Variáveis de Ambiente**: dotenv
+
+## 📝 Scripts Disponíveis
+
+```bash
+npm run dev      # Desenvolvimento com nodemon + tsx
+npm run build    # Compilar TypeScript → JavaScript
+npm start        # Executar em produção (requer build primeiro)
+```
+
+## 🧪 Exemplo de Uso da Arquitetura
+
+### Adicionar nova funcionalidade: Atualizar perfil
+
+**1. Repository** (`src/repository/userRepository.ts`):
+```typescript
+async updateProfile(userId: number, data: { email?: string }) {
+  const user = await this.findById(userId);
+  if (!user) return null;
+  return await user.update(data);
+}
+```
+
+**2. Service** (`src/service/userService.ts`):
+```typescript
+async updateUserProfile(userId: number, data: { email?: string }) {
+  const user = await userRepository.updateProfile(userId, data);
+  if (!user) throw new Error("USER_NOT_FOUND");
+  return { username: user.username, email: user.email };
+}
+```
+
+**3. Controller** (`src/controller/userController.ts`):
+```typescript
+export const updateProfileController = async(req, res) => {
+  try {
+    const userData = await userService.updateUserProfile(req.user.id, req.body);
+    return res.status(200).json({ message: "Profile updated!", userData });
+  } catch (error) {
+    // tratamento de erro
+  }
+};
+```
+
+## 📚 Documentação Adicional
+
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - Arquitetura detalhada
+- [REFACTORING_SUMMARY.md](./REFACTORING_SUMMARY.md) - Resumo das mudanças
+- [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - 🔧 **Solução de problemas comuns**
+- [QUICK_START.md](./QUICK_START.md) - Início rápido
+
+## 🤝 Contribuindo
+
+Ao adicionar novas funcionalidades, siga sempre o padrão:
+1. **Model** → Definir entidade no Sequelize
+2. **Repository** → Criar métodos de acesso ao banco
+3. **Service** → Implementar lógica de negócio
+4. **Controller** → Criar handler HTTP
+5. **Route** → Registrar endpoint
+
+## 📄 Licença
+
+Este projeto é parte de um TCC (Trabalho de Conclusão de Curso).

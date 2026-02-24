@@ -1,5 +1,6 @@
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import { jwtConfig } from "../config/database.js";
 
 interface UserPayload {
   username: string;
@@ -12,8 +13,8 @@ const generateAccessToken = async (user: UserPayload): Promise<string> => {
     {
       username: user.username,
     },
-    "access_secret_key",
-    { expiresIn: "15min" }
+    jwtConfig.accessSecretKey,
+    { expiresIn: jwtConfig.accessTokenExpiry } as SignOptions
   );
 
   return token;
@@ -24,8 +25,8 @@ const generateRefreshToken = async (user: UserPayload): Promise<string> => {
     {
       username: user.username,
     },
-    "refresh_secret_key",
-    { expiresIn: "7d" }
+    jwtConfig.refreshSecretKey,
+    { expiresIn: jwtConfig.refreshTokenExpiry } as SignOptions
   );
 
   return token;
@@ -41,7 +42,7 @@ const authenticateToken = async (req: Request, res: Response, next: NextFunction
     return;
   }
   
-  jwt.verify(token, "access_secret_key", async (err) => {
+  jwt.verify(token, jwtConfig.accessSecretKey, async (err) => {
     if (err) {
       res.status(403).json({
         message: "Invalid token!"
