@@ -1,9 +1,9 @@
-import { Sequelize } from "sequelize";
-import createUserModel from "../model/userModel.js";
+import { Sequelize, ModelStatic } from "sequelize";
+import createUserModel, { UserInstance } from "../model/userModel.js";
 
-let User = null;
+let User: ModelStatic<UserInstance> | null = null;
 
-export const dbConnection = async(database, username, password) => {
+export const dbConnection = async(database: string, username: string, password: string): Promise<void> => {
   const sequelize = new Sequelize(database, username, password, {
     host: 'localhost',
     dialect: 'postgres'
@@ -19,4 +19,4 @@ export const dbConnection = async(database, username, password) => {
   }
 }
 
-export {User};
+export { User };

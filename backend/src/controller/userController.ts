@@ -1,11 +1,23 @@
+import { Request, Response } from "express";
 import { User } from "../db/dbconnetion.js";
 import bcrypt from "bcryptjs";
 import { checkUserAlreadyExistsByRefreshToken, checkUserAlreadyExistsByUsername } from "../utils/checkDb/checkUser.js";
 import { generateAccessToken, generateRefreshToken } from "../auth/auth.js";
 import jwt from "jsonwebtoken";
 
-export const registerController = async(req, res) => {
-  const { username, email, password } = req.body;
+interface RegisterBody {
+  username: string;
+  email: string;
+  password: string;
+}
+
+interface LoginBody {
+  username: string;
+  password: string;
+}
+
+export const registerController = async(req: Request<{}, {}, RegisterBody>, res: Response): Promise<Response> => {
+  const { username, password } = req.body;
   const existUser = await checkUserAlreadyExistsByUsername(username);
   if(existUser.isExists){
     return res.status(409).json({
@@ -14,7 +26,7 @@ export const registerController = async(req, res) => {
   }
 
   const hashPass = await bcrypt.hash(password, 10);
-  const user = await User.create(
+  const user = await User!.create(
     {
       ...req.body,
       password: hashPass
@@ -30,11 +42,11 @@ export const registerController = async(req, res) => {
   });
 };
 
-export const loginController = async(req, res) => {
+export const loginController = async(req: Request<{}, {}, LoginBody>, res: Response): Promise<Response> => {
   const { username, password } = req.body;
   try{
     const existUser = await checkUserAlreadyExistsByUsername(username);
-    if(existUser.isExists){
+    if(existUser.isExists && existUser.user){
       const isValidPass = await bcrypt.compare(password, existUser.user.password);
       if(!isValidPass){
         return res.status(401).json({
@@ -71,9 +83,8 @@ export const loginController = async(req, res) => {
   }
 };
 
-export const refreshController = async(req, res) => {
+export const refreshController = async(req: Request, res: Response): Promise<Response> => {
   const refreshToken = req.cookies.refreshToken;
-  const {isExists, user} = await checkUserAlreadyExistsByRefreshToken(refreshToken);
 
   try{
     if(!refreshToken){
@@ -81,17 +92,30 @@ export const refreshController = async(req, res) => {
         message: "Unauthorized!"
       });
     }
-    jwt.verify(refreshToken, "refresh_secret_key", async (err, decoded) => {
-      if(err){
-        return res.status(403).json({
-          message: "Invalid token!"
-        });
-      }
+    
+    const {user} = await checkUserAlreadyExistsByRefreshToken(refreshToken);
+    
+    return new Promise((resolve) => {
+      jwt.verify(refreshToken, "refresh_secret_key", async (err: jwt.VerifyErrors | null) => {
+        if(err){
+          resolve(res.status(403).json({
+            message: "Invalid token!"
+          }));
+          return;
+        }
 
-      const token = await generateAccessToken(user.dataValues);
-      return res.status(200).json({
-        "message": "Token refreshed!",
-        "accessToken": token
+        if(user){
+          const token = await generateAccessToken(user.dataValues);
+          resolve(res.status(200).json({
+            "message": "Token refreshed!",
+            "accessToken": token
+          }));
+          return;
+        }
+        
+        resolve(res.status(404).json({
+          message: "User not found!"
+        }));
       });
     });
 
@@ -103,24 +127,24 @@ export const refreshController = async(req, res) => {
 
 };
 
-export const logoutController = async(req, res) => {
+export const logoutController = async(req: Request, res: Response): Promise<Response> => {
     const refreshToken = req.cookies.refreshToken;
     if(!refreshToken){
       return res.status(401).json({
         message: "Unauthorized!"
       });
-    };
+    }
     const {isExists, user} = await checkUserAlreadyExistsByRefreshToken(refreshToken);
-    if(isExists){
+    if(isExists && user){
       user.update({refreshToken: null});
-    };
+    }
     res.clearCookie("refreshToken");
     return res.status(200).json({
       message: "Logged out successfully!"
     });
 };
 
-export const profileController = async(req, res) => {
+export const profileController = async(req: Request, res: Response): Promise<Response> => {
   return res.status(200).json({
     message: "User profile data",
     userData: {
