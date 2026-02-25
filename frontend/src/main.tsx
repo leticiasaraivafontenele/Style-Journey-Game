@@ -2,6 +2,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
+import { ToastProvider } from "./contexts/ToastContext";
+import { ToastContainer } from "./components/ToastContainer";
 
 const container = document.getElementById("root");
 
@@ -9,7 +11,10 @@ if (container) {
   const root = createRoot(container);
   root.render(
     <BrowserRouter>
-      <App />
+      <ToastProvider>
+        <App />
+        <ToastContainer />
+      </ToastProvider>
     </BrowserRouter>
   );
 } else {

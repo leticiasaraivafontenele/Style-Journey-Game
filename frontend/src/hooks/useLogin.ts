@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { authService } from '../services/authService';
+import { flashMessenger } from '../utils/flashMessenger';
 
 interface UseLoginReturn {
   username: string;
@@ -34,11 +35,13 @@ export const useLogin = (): UseLoginReturn => {
       localStorage.setItem('username', response.userData.username);
       
       console.log('Login realizado com sucesso!', response);
+      flashMessenger("success", response.message);
       
       setUsername('');
       setPassword('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao fazer login');
+
     } finally {
       setIsLoading(false);
     }
