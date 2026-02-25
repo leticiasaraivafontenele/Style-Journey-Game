@@ -18,6 +18,7 @@ export interface RegisterCredentials {
   username: string;
   email: string;
   password: string;
+  avatarId?: number;
 }
 
 export interface RegisterResponse {
@@ -55,6 +56,8 @@ export const authService = {
       },
       body: JSON.stringify(credentials),
     });
+
+    console.log('Register success:', response);
 
     if (!response.ok) {
       const error = await response.json();

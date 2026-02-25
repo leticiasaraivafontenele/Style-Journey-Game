@@ -4,10 +4,12 @@ import { useLogin } from '../../../hooks/useLogin';
 import { loginStrings, registerStrings } from '../../../strings/pt-br/login';
 import { authService } from '../../../services/authService';
 import { flashMessenger } from '../../../utils/flashMessenger';
+import AvatarSelector from '../../../components/AvatarSelector';
 
 export default function FormLogin() {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [email, setEmail] = useState('');
+  const [avatarId, setAvatarId] = useState(1);
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
 
@@ -38,13 +40,14 @@ export default function FormLogin() {
     setIsRegisterLoading(true);
 
     try {
-      await authService.register({ username, email, password });
+      await authService.register({ username, email, password, avatarId });
       
       flashMessenger("success", registerStrings.registerSuccessMessage);
       
       setUsername('');
       setEmail('');
       setPassword('');
+      setAvatarId(1);
       setIsRegisterMode(false);
     } catch (err) {
       setRegisterError(err instanceof Error ? err.message : registerStrings.errorUndefinedMessage);
@@ -58,6 +61,7 @@ export default function FormLogin() {
     setUsername('');
     setEmail('');
     setPassword('');
+    setAvatarId(1);
     setRegisterError(null);
   };
 
@@ -120,6 +124,12 @@ export default function FormLogin() {
               disabled={isRegisterLoading}
             />
           </div>
+
+          <AvatarSelector
+            selectedAvatarId={avatarId}
+            onAvatarSelect={setAvatarId}
+            disabled={isRegisterLoading}
+          />
 
           <div className="h-5">
             {registerError && (
