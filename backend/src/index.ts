@@ -2,6 +2,7 @@ import { loadEnv } from "./config/env.js";
 loadEnv();
 
 import express from "express";
+import cors from "cors";
 import { dbConnection } from "./db/dbconnetion.js";
 import router from "./route/routes.js";
 import cookie from "cookie-parser";
@@ -9,6 +10,12 @@ import { serverConfig } from "./config/database.js";
 
 const app = express();
 
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(cookie());
 app.use("/api", router);

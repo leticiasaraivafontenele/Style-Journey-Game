@@ -7,6 +7,7 @@ interface RegisterData {
   username: string;
   email: string;
   password: string;
+  avatarId?: number;
 }
 
 interface LoginResult {
@@ -32,6 +33,7 @@ export class UserService {
       username: userData.username,
       email: userData.email,
       password: hashedPassword,
+      avatarId: userData.avatarId,
     });
 
     return {

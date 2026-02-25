@@ -27,6 +27,7 @@ export class UserRepository {
     username: string;
     email: string;
     password: string;
+    avatarId?: number;
   }): Promise<UserInstance> {
     if (!User) {
       throw new Error("User model not initialized");
