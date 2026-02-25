@@ -20,7 +20,7 @@ export default function MapDiv({ showMap, handleMapCloseClick }: MapDivProps) {
         alt="mapa" 
         className="w-200 h-200 object-cover"
       />
-      <div className="absolute bottom-1/8 left-1/4 transform w-110 h-130 bg-white flex items-center justify-center">
+      <div className="absolute bottom-1/8 left-1/4 transform w-110 h-140 flex items-center justify-center">
         <FormLogin />
       </div>
     </div>

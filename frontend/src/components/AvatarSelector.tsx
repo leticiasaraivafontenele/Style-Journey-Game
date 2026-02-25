@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { avatars } from '../utils/avatarHelper';
+import { avatarStrings } from '../strings/pt-br/avatar';
+import { TiArrowBackOutline, TiArrowForwardOutline } from 'react-icons/ti';
 
 interface AvatarSelectorProps {
   selectedAvatarId: number;
@@ -27,9 +29,9 @@ export default function AvatarSelector({ selectedAvatarId, onAvatarSelect, disab
   const currentAvatar = avatars[currentIndex];
 
   return (
-    <div className="flex flex-col items-center space-y-4 w-full">
+    <div className="flex flex-col items-center space-y-2 w-full">
       <label className="block text-sm font-medium text-gray-700">
-        Escolha seu Avatar
+        {avatarStrings.selectAvatarLabel}
       </label>
       
       <div className="flex items-center justify-center space-x-4 w-full">
@@ -37,10 +39,10 @@ export default function AvatarSelector({ selectedAvatarId, onAvatarSelect, disab
           type="button"
           onClick={handlePrevious}
           disabled={disabled}
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l transition-colors duration-200 disabled:bg-gray-200 disabled:cursor-not-allowed"
-          aria-label="Avatar anterior"
+          className="bg-gray-300 hover:bg-orange-300 text-gray-800 font-bold py-2 px-4 rounded-l transition-colors duration-200 disabled:bg-gray-200 cursor-pointer disabled:cursor-not-allowed"
+          aria-label={avatarStrings.previousAvatarButton}
         >
-          ←
+          <TiArrowBackOutline className="text-lg"/>
         </button>
 
         <div className="flex flex-col items-center space-y-2 min-w-[200px]">
@@ -58,10 +60,10 @@ export default function AvatarSelector({ selectedAvatarId, onAvatarSelect, disab
           type="button"
           onClick={handleNext}
           disabled={disabled}
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r transition-colors duration-200 disabled:bg-gray-200 disabled:cursor-not-allowed"
-          aria-label="Próximo avatar"
+          className="bg-gray-300 hover:bg-orange-300 text-gray-800 font-bold py-2 px-4 rounded-r transition-colors duration-200 disabled:bg-gray-200 cursor-pointer disabled:cursor-not-allowed"
+          aria-label={avatarStrings.nextAvatarButton}
         >
-          →
+          <TiArrowForwardOutline className="text-lg" />
         </button>
       </div>
 
@@ -79,8 +81,8 @@ export default function AvatarSelector({ selectedAvatarId, onAvatarSelect, disab
               index === currentIndex
                 ? 'bg-orange-500 scale-125'
                 : 'bg-gray-300 hover:bg-gray-400'
-            } disabled:cursor-not-allowed`}
-            aria-label={`Selecionar ${avatar.name}`}
+            } cursor-pointer disabled:cursor-not-allowed`}
+            aria-label={`${avatarStrings.selectLabel} ${avatar.name}`}
           />
         ))}
       </div>
