@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { authService } from '../services/authService';
 import { flashMessenger } from '../utils/flashMessenger';
+import { loginStrings } from '../strings/pt-br/login';
 
 interface UseLoginReturn {
   username: string;
@@ -22,7 +23,7 @@ export const useLogin = (): UseLoginReturn => {
     setError(null);
     
     if (!username || !password) {
-      setError('Por favor, preencha todos os campos');
+      setError(loginStrings.errorMessage);
       return;
     }
 
@@ -34,13 +35,13 @@ export const useLogin = (): UseLoginReturn => {
       localStorage.setItem('accessToken', response.userData.accessToken);
       localStorage.setItem('username', response.userData.username);
       
-      console.log('Login realizado com sucesso!', response);
-      flashMessenger("success", response.message);
+      console.log('Login success!', response.message);
+      flashMessenger("success", loginStrings.loginSuccessMessage);
       
       setUsername('');
       setPassword('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao fazer login');
+      setError(err instanceof Error ? err.message : loginStrings.errorUndefinedMessage);
 
     } finally {
       setIsLoading(false);

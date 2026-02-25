@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "flowbite-react";
-import { LogoImagePng, WordBackgroundImage, MapImage } from "../../assets";
+import { LogoImagePng, WordBackgroundImage } from "../../assets";
 import MapDiv from "./componentes/MapDiv";
 
 export default function MenuPage() {
