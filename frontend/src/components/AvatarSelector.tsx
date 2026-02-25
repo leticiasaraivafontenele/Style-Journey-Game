@@ -29,7 +29,7 @@ export default function AvatarSelector({ selectedAvatarId, onAvatarSelect, disab
   const currentAvatar = avatars[currentIndex];
 
   return (
-    <div className="flex flex-col items-center space-y-2 w-full">
+    <div className="flex flex-col items-center space-y-1 w-full">
       <label className="block text-sm font-medium text-gray-700">
         {avatarStrings.selectAvatarLabel}
       </label>
