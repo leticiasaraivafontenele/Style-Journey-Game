@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import api from './api';
 
 export interface LoginCredentials {
   username: string;
@@ -31,50 +31,29 @@ export interface RegisterResponse {
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
-    const response = await fetch(`${API_BASE_URL}/api/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(credentials),
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Erro ao fazer login');
+    try {
+      const response = await api.post<LoginResponse>('/api/login', credentials);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Erro ao fazer login');
     }
-
-    return response.json();
   },
 
   async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
-    const response = await fetch(`${API_BASE_URL}/api/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(credentials),
-    });
-
-    console.log('Register success:', response);
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Erro ao registrar usuário');
+    try {
+      const response = await api.post<RegisterResponse>('/api/register', credentials);
+      console.log('Register success:', response.data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Erro ao registrar usuário');
     }
-
-    return response.json();
   },
 
   async logout(): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/api/logout`, {
-      method: 'POST',
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      throw new Error('Erro ao fazer logout');
+    try {
+      await api.post('/api/logout');
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Erro ao fazer logout');
     }
   },
 };
