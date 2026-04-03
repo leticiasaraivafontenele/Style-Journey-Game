@@ -35,8 +35,25 @@ export class UserRepository {
     return await User.create(userData);
   }
 
-  async update(user: UserInstance, data: Partial<{ refreshToken: string | null }>): Promise<UserInstance> {
+  async update(
+    user: UserInstance,
+    data: Partial<{
+      username: string;
+      email: string;
+      password: string;
+      avatarId: number;
+      level: number;
+      refreshToken: string | null;
+    }>
+  ): Promise<UserInstance> {
     return await user.update(data);
+  }
+
+  async delete(id: number): Promise<void> {
+    if (!User) {
+      throw new Error("User model not initialized");
+    }
+    await User.destroy({ where: { id } });
   }
 
   async existsByUsername(username: string): Promise<boolean> {

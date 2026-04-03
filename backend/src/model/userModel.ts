@@ -7,9 +7,10 @@ interface UserAttributes {
   password: string;
   refreshToken: string | null;
   avatarId: number;
+  level: number;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'refreshToken' | 'avatarId'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'refreshToken' | 'avatarId' | 'level'> {}
 
 export interface UserInstance extends Model<UserAttributes, UserCreationAttributes>, UserAttributes {}
 
@@ -50,6 +51,11 @@ const createUserModel = (sequelize: Sequelize) => {
         min: 1,
         max: 6
       }
+    },
+    level: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   })
 

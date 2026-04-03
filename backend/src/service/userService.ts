@@ -109,6 +109,43 @@ export class UserService {
   async getUserByRefreshToken(refreshToken: string): Promise<UserInstance | null> {
     return await userRepository.findByRefreshToken(refreshToken);
   }
+
+  async getUserById(id: number): Promise<UserInstance> {
+    const user = await userRepository.findById(id);
+
+    if (!user) {
+      throw new Error("USER_NOT_FOUND");
+    }
+
+    return user;
+  }
+
+  async updateUser(
+    id: number,
+    data: Partial<{ username: string; email: string; password: string; avatarId: number; level: number }>
+  ): Promise<UserInstance> {
+    const user = await userRepository.findById(id);
+
+    if (!user) {
+      throw new Error("USER_NOT_FOUND");
+    }
+
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 10);
+    }
+
+    return await userRepository.update(user, data);
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    const user = await userRepository.findById(id);
+
+    if (!user) {
+      throw new Error("USER_NOT_FOUND");
+    }
+
+    await userRepository.delete(id);
+  }
 }
 
 export const userService = new UserService();

@@ -145,3 +145,83 @@ export const profileController = async(req: Request, res: Response): Promise<Res
     }
   });
 };
+
+export const getUserController = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid id." });
+    }
+
+    const user = await userService.getUserById(id);
+
+    return res.status(200).json({
+      data: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        avatarId: user.avatarId,
+        level: user.level
+      }
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "USER_NOT_FOUND") {
+      return res.status(404).json({ message: "User not found!" });
+    }
+    console.error("Error in getUserController:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updateUserController = async (
+  req: Request<{ id: string }, {}, Partial<{ username: string; email: string; password: string; avatarId: number; level: number }>>,
+  res: Response
+): Promise<Response> => {
+  try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid id." });
+    }
+
+    const user = await userService.updateUser(id, req.body);
+
+    return res.status(200).json({
+      message: "User updated successfully!",
+      data: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        avatarId: user.avatarId,
+        level: user.level
+      }
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "USER_NOT_FOUND") {
+      return res.status(404).json({ message: "User not found!" });
+    }
+    console.error("Error in updateUserController:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const deleteUserController = async (req: Request<{ id: string }>, res: Response): Promise<Response> => {
+  try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid id." });
+    }
+
+    await userService.deleteUser(id);
+
+    return res.status(200).json({ message: "User deleted successfully!" });
+  } catch (error) {
+    if (error instanceof Error && error.message === "USER_NOT_FOUND") {
+      return res.status(404).json({ message: "User not found!" });
+    }
+    console.error("Error in deleteUserController:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
