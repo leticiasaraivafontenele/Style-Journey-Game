@@ -8,7 +8,11 @@ export interface LoginCredentials {
 export interface LoginResponse {
   message: string;
   userData: {
+    userId: number;
     username: string;
+    email: string;
+    avatarId: number;
+    level: number;
     accessToken: string;
     refreshToken: string;
   };
