@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Button } from "flowbite-react";
-import { LogoImagePng, WordBackgroundImage } from "../../assets";
-import MapDiv from "./componentes/MapDiv";
+import ModalMap from "./componentes/MapDiv";
+import AuthForms from "./componentes/AuthForms";
 import { menuStrings } from "../../strings/pt-br/menu";
+import { logoOutlineImage, menuBackgroundImage } from "../../assets";
 
 export default function MenuPage() {
   const [showMap, setShowMap] = useState(false);
@@ -17,28 +18,28 @@ export default function MenuPage() {
   return (
     <div 
       className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
-      style={{ backgroundImage: `url(${WordBackgroundImage})`, backgroundSize: 'cover' }} 
+      style={{ backgroundImage: `url(${menuBackgroundImage})`, backgroundSize: 'cover' }} 
     >
       <img 
-        src={LogoImagePng} 
+        src={logoOutlineImage} 
         alt="logo" 
         className={`object-cover transition-all duration-1000 ease-in-out ${
           showMap 
-            ? 'fixed top-4 right-4 w-100 h-100 z-50' 
-            : 'w-120 h-120'
+            ? 'hidden' 
+            : 'w-150 h-150'
         }`}
       />
-      <div className={`transition-opacity duration-200 ${showMap ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <div className={`absolute bottom-2/8 transition-opacity duration-200 ${showMap ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <Button 
           onClick={handlePlayClick}
-          className="bg-orange-500 hover:bg-orange-900 text-white text-xl font-bold py-2 px-4 rounded transition-colors duration-200 cursor-pointer"
+          className="bg-yellow-600 hover:bg-yellow-900 text-white text-xl font-bold py-2 px-4 rounded transition-colors duration-200 cursor-pointer font-cinzel"
         >
           {menuStrings.playButton}
         </Button>
       </div>
-      <MapDiv showMap={showMap} handleMapCloseClick={handleMapCloseClick} />
-
-
+      <ModalMap showMap={showMap} handleMapCloseClick={handleMapCloseClick}>
+        <AuthForms />
+      </ModalMap>
     </div>
   )
 }

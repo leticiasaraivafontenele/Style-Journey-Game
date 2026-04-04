@@ -49,11 +49,9 @@ export default function AvatarSelector({ selectedAvatarId, onAvatarSelect, disab
           <div className="w-32 h-32 rounded-lg flex items-center justify-center overflow-hidden border-4 border-orange-500 ">
             <img
               src={currentAvatar.image}
-              alt={currentAvatar.name}
               className="w-full h-full object-contain"
             />
           </div>
-          <p className="text-sm font-medium text-gray-700">{currentAvatar.name}</p>
         </div>
 
         <button
@@ -82,7 +80,6 @@ export default function AvatarSelector({ selectedAvatarId, onAvatarSelect, disab
                 ? 'bg-orange-500 scale-125'
                 : 'bg-gray-300 hover:bg-gray-400'
             } cursor-pointer disabled:cursor-not-allowed`}
-            aria-label={`${avatarStrings.selectLabel} ${avatar.name}`}
           />
         ))}
       </div>
