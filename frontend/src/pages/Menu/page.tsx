@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "flowbite-react";
-import ModalMap from "./componentes/MapDiv";
-import AuthForms from "./componentes/AuthForms";
+import ModalMap from "../../components/ModalMap";
+import AuthForms from "../../components/forms/AuthForms";
 import { menuStrings } from "../../strings/pt-br/menu";
 import { logoOutlineImage, menuBackgroundImage } from "../../assets";
 

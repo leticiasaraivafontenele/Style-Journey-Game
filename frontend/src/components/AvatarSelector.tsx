@@ -34,19 +34,19 @@ export default function AvatarSelector({ selectedAvatarId, onAvatarSelect, disab
         {avatarStrings.selectAvatarLabel}
       </label>
       
-      <div className="flex items-center justify-center space-x-4 w-full">
+      <div className="flex items-center justify-center">
         <button
           type="button"
           onClick={handlePrevious}
           disabled={disabled}
-          className="bg-gray-300 hover:bg-orange-300 text-gray-800 font-bold py-2 px-4 rounded-l transition-colors duration-200 disabled:bg-gray-200 cursor-pointer disabled:cursor-not-allowed"
+          className="text-gray-800 hover:text-yellow-600 font-bold cursor-pointer disabled:cursor-not-allowed"
           aria-label={avatarStrings.previousAvatarButton}
         >
           <TiArrowBackOutline className="text-lg"/>
         </button>
 
-        <div className="flex flex-col items-center space-y-2 min-w-[200px]">
-          <div className="w-32 h-32 rounded-lg flex items-center justify-center overflow-hidden border-4 border-orange-500 ">
+        <div className="flex flex-col items-center space-y-2 mx-4">
+          <div className="w-32 h-32 rounded-lg flex items-center justify-center overflow-hidden border-2 border-black ">
             <img
               src={currentAvatar.image}
               className="w-full h-full object-contain"
@@ -58,7 +58,7 @@ export default function AvatarSelector({ selectedAvatarId, onAvatarSelect, disab
           type="button"
           onClick={handleNext}
           disabled={disabled}
-          className="bg-gray-300 hover:bg-orange-300 text-gray-800 font-bold py-2 px-4 rounded-r transition-colors duration-200 disabled:bg-gray-200 cursor-pointer disabled:cursor-not-allowed"
+          className="text-gray-800 hover:text-yellow-600 font-bold cursor-pointer disabled:cursor-not-allowed"
           aria-label={avatarStrings.nextAvatarButton}
         >
           <TiArrowForwardOutline className="text-lg" />
@@ -77,7 +77,7 @@ export default function AvatarSelector({ selectedAvatarId, onAvatarSelect, disab
             disabled={disabled}
             className={`w-3 h-3 rounded-full transition-all duration-200 ${
               index === currentIndex
-                ? 'bg-orange-500 scale-125'
+                ? 'bg-yellow-600 scale-125'
                 : 'bg-gray-300 hover:bg-gray-400'
             } cursor-pointer disabled:cursor-not-allowed`}
           />

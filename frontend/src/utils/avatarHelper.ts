@@ -1,4 +1,4 @@
-import { character1Image, character2Image, character3Image, character4Image, character5Image, character6Image } from "../assets";
+import { character1Image, character2Image, character3Image, character4Image, character5Image, character6Image, character7Image, character8Image } from "../assets";
 
 export interface Avatar {
   id: number;
@@ -12,6 +12,9 @@ export const avatars: Avatar[] = [
   { id: 4, image: character4Image },
   { id: 5, image: character5Image },
   { id: 6, image: character6Image },
+  { id: 7, image: character7Image },
+  { id: 8, image: character8Image },
+
 ];
 
 export const getAvatarById = (id: number): Avatar | undefined => {

@@ -1,5 +1,5 @@
 import { PiXLogoFill } from "react-icons/pi";
-import { paperImage } from "../../../assets";
+import { paperImage } from "../assets";
 
 interface ModalMapProps {
   showMap: boolean;
@@ -27,13 +27,13 @@ export default function ModalMap({ showMap, handleMapCloseClick, children, darke
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-180 rotate-90 object-cover"
         />
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-120"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-180 h-130"
           style={{ zIndex: 10 }}
         >
           {children}
         </div>
         <PiXLogoFill
-          className="absolute bottom-4 right-4 text-red-800 text-4xl cursor-pointer hover:text-red-600 transition-colors duration-200"
+          className="absolute bottom-20 right-15 text-red-800 text-4xl cursor-pointer hover:text-red-600 transition-colors duration-200"
           style={{ zIndex: 20 }}
           onClick={handleMapCloseClick}
         />

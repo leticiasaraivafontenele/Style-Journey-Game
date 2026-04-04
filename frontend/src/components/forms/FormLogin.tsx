@@ -1,6 +1,6 @@
 import { FiAlertTriangle } from 'react-icons/fi';
-import { useLogin } from '../../../hooks/useLogin';
-import { loginStrings } from '../../../strings/pt-br/login';
+import { useLogin } from '../../hooks/useLogin';
+import { loginStrings } from '../../strings/pt-br/login';
 
 interface FormLoginProps {
   onSwitchToRegister: () => void;
@@ -24,13 +24,13 @@ export default function FormLogin({ onSwitchToRegister }: FormLoginProps) {
 
   return (
     <div className="w-full flex flex-col items-center justify-center px-6 py-4">
-      <h2 className="text-4xl font-black font-serif mb-6 text-white">{loginStrings.title}</h2>
+      <h2 className="text-4xl font-black font-cinzel mb-10 text-amber-900">{loginStrings.title}</h2>
 
-      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-3">
+      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-5">
         <div>
           <label
             htmlFor="username"
-            className="block text-base font-medium text-white mb-1"
+            className="block text-base font-medium text-black mb-1"
           >
             {loginStrings.usernameLabel}
           </label>
@@ -39,7 +39,7 @@ export default function FormLogin({ onSwitchToRegister }: FormLoginProps) {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-white"
+            className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-black"
             placeholder={loginStrings.usernamePlaceholder}
             disabled={isLoading}
           />
@@ -48,7 +48,7 @@ export default function FormLogin({ onSwitchToRegister }: FormLoginProps) {
         <div>
           <label
             htmlFor="password"
-            className="block text-base font-medium text-white mb-1"
+            className="block text-base font-medium text-black mb-1"
           >
             {loginStrings.passwordLabel}
           </label>
@@ -57,7 +57,7 @@ export default function FormLogin({ onSwitchToRegister }: FormLoginProps) {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-white"
+            className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-black"
             placeholder={loginStrings.passwordPlaceholder}
             disabled={isLoading}
           />
@@ -71,10 +71,11 @@ export default function FormLogin({ onSwitchToRegister }: FormLoginProps) {
           )}
         </div>
 
+<div className='w-full flex flex-col items-center gap-3'>
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
+          className="w-60 bg-yellow-600 hover:bg-yellow-700 text-white font-cinzel font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
         >
           {isLoading ? loginStrings.loadingButton : loginStrings.loginButton}
         </button>
@@ -83,10 +84,12 @@ export default function FormLogin({ onSwitchToRegister }: FormLoginProps) {
           type="button"
           onClick={onSwitchToRegister}
           disabled={isLoading}
-          className="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
+          className="w-60 bg-amber-900 hover:bg-amber-700 text-white font-cinzel font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
         >
           {loginStrings.toggleToRegister}
-        </button>
+        </button>  
+</div>
+
       </form>
     </div>
   );
