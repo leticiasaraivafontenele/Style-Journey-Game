@@ -1,17 +1,29 @@
-import { mapModule1Image, mapModule2Image } from '../assets';
+import { mapModule1Image, mapModule2Image, stickImage } from '../assets';
+import { mapStrings } from '../strings/pt-br/map';
 
 const mapImages = [
-  { image: mapModule1Image, title: 'Módulo 1 - Seletores' },
-  { image: mapModule2Image, title: 'Módulo 2 - Cores e Tipografia' }
+  { image: mapModule1Image, title: mapStrings.module1Title },
+  { image: mapModule2Image, title: mapStrings.module2Title },
 ];
 
 function HorizontalStick({title}:{title: string}) {
   return (
-    <div className="w-full flex justify-center items-center h-30 bg-amber-900">
-      <h2 className="text-white font-cinzel font-bold text-5xl">
-        {title}
-      </h2>
-    </div>
+      <div
+        className="flex items-center justify-center w-full"
+        style={{
+          zIndex: 50,
+          backgroundImage: `url(${stickImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          minHeight: '70px',
+        }}
+      >
+        {title && (
+          <span className="text-black font-cinzel font-bold text-3xl">
+            {title}
+          </span>
+        )}
+      </div>
   );
 }
 
@@ -23,7 +35,7 @@ export default function MapBackground() {
           <HorizontalStick title={mapImage.title} />
           <img
             src={mapImage.image}
-            alt={`mapa módulo ${index + 1}`}
+            alt={`${mapStrings.moduleImageAltPrefix} ${index + 1}`}
             style={{ display: 'block', width: '100%' }}
           />
         </div>

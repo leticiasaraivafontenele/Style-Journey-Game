@@ -1,5 +1,5 @@
 export const databaseConfig = {
-  database: process.env.DB_NAME || "cssjourney_db",
+  database: process.env.DB_NAME || "style_journey_db",
   username: process.env.DB_USER || "postgres",
   password: process.env.DB_PASSWORD || "postgres",
   host: process.env.DB_HOST || "localhost",

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "flowbite-react";
-import ModalMap from "../../components/ModalMap";
+import ModalPaper from "../../components/modal/ModalPaper";
 import AuthForms from "../../components/forms/AuthForms";
 import { menuStrings } from "../../strings/pt-br/menu";
 import { logoOutlineImage, menuBackgroundImage } from "../../assets";
@@ -22,7 +22,7 @@ export default function MenuPage() {
     >
       <img 
         src={logoOutlineImage} 
-        alt="logo" 
+        alt={menuStrings.logoAlt} 
         className={`object-cover transition-all duration-1000 ease-in-out ${
           showMap 
             ? 'hidden' 
@@ -37,9 +37,9 @@ export default function MenuPage() {
           {menuStrings.playButton}
         </Button>
       </div>
-      <ModalMap showMap={showMap} handleMapCloseClick={handleMapCloseClick}>
+      <ModalPaper showMap={showMap} handleMapCloseClick={handleMapCloseClick}>
         <AuthForms />
-      </ModalMap>
+      </ModalPaper>
     </div>
   )
 }

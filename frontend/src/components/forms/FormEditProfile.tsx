@@ -1,6 +1,7 @@
 import { FiAlertTriangle } from 'react-icons/fi';
-import { useEditProfile } from '../hooks/useEditProfile';
-import AvatarSelector from './AvatarSelector';
+import { useEditProfile } from '../../hooks/useEditProfile';
+import AvatarSelector from '../avatar/AvatarSelector';
+import { editProfileStrings } from '../../strings/pt-br/editProfile';
 
 interface FormEditProfileProps {
   onSuccess: () => void;
@@ -32,14 +33,14 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
   if (isFetching) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <p className="text-amber-900 font-cinzel font-bold text-lg">Carregando...</p>
+        <p className="text-amber-900 font-cinzel font-bold text-lg">{editProfileStrings.loading}</p>
       </div>
     );
   }
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
-      <h2 className="text-4xl font-black font-cinzel text-amber-900">Editar Perfil</h2>
+      <h2 className="text-4xl font-black font-cinzel text-amber-900">{editProfileStrings.title}</h2>
 
       <form onSubmit={handleSubmit} className="w-full space-y-2 p-6">
         <div id="fields" className="flex w-full items-center">
@@ -49,7 +50,7 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
                 htmlFor="edit-username"
                 className="block text-base font-medium text-black mb-1"
               >
-                Usuário
+                {editProfileStrings.usernameLabel}
               </label>
               <input
                 id="edit-username"
@@ -57,7 +58,7 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-black"
-                placeholder="Digite seu usuário"
+                placeholder={editProfileStrings.usernamePlaceholder}
                 disabled={isLoading}
               />
             </div>
@@ -67,7 +68,7 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
                 htmlFor="edit-email"
                 className="block text-base font-medium text-black mb-1"
               >
-                E-mail
+                {editProfileStrings.emailLabel}
               </label>
               <input
                 id="edit-email"
@@ -75,7 +76,7 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-black"
-                placeholder="Digite seu e-mail"
+                placeholder={editProfileStrings.emailPlaceholder}
                 disabled={isLoading}
               />
             </div>
@@ -85,7 +86,7 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
                 htmlFor="edit-password"
                 className="block text-base font-medium text-black mb-1"
               >
-                Nova Senha <span className="text-gray-500 text-sm">(deixe em branco para manter)</span>
+                {editProfileStrings.passwordLabel} <span className="text-gray-500 text-sm">{editProfileStrings.passwordHint}</span>
               </label>
               <input
                 id="edit-password"
@@ -93,7 +94,7 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-black"
-                placeholder="Nova senha (opcional)"
+                placeholder={editProfileStrings.passwordPlaceholder}
                 disabled={isLoading}
               />
             </div>
@@ -121,7 +122,7 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
             disabled={isLoading}
             className="w-60 bg-yellow-600 hover:bg-yellow-700 text-white font-cinzel font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Salvando...' : 'Salvar Alterações'}
+            {isLoading ? editProfileStrings.savingButton : editProfileStrings.saveButton}
           </button>
 
           <button
@@ -130,7 +131,7 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
             disabled={isLoading}
             className="w-60 bg-red-700 hover:bg-red-600 text-white font-cinzel font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
           >
-            Excluir Perfil
+            {editProfileStrings.deleteButton}
           </button>
         </div>
       </form>

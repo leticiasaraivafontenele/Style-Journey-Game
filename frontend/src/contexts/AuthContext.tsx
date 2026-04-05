@@ -43,15 +43,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   );
   const [userId, setUserId] = useState<number | null>(() => {
     const id = Cookies.get(USER_ID_KEY);
-    return id ? parseInt(id) : null;
+    const parsed = id ? parseInt(id) : null;
+    return parsed !== null && !isNaN(parsed) ? parsed : null;
   });
   const [avatarId, setAvatarId] = useState<number>(() => {
     const id = Cookies.get(AVATAR_ID_KEY);
-    return id ? parseInt(id) : 1;
+    const parsed = id ? parseInt(id) : NaN;
+    return !isNaN(parsed) ? parsed : 1;
   });
   const [level, setLevel] = useState<number>(() => {
     const lvl = Cookies.get(LEVEL_KEY);
-    return lvl ? parseInt(lvl) : 1;
+    const parsed = lvl ? parseInt(lvl) : NaN;
+    return !isNaN(parsed) ? parsed : 1;
   });
 
   const login = (token: string, user: string, id: number, avatar: number, lvl: number) => {

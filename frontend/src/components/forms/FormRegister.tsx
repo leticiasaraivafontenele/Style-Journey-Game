@@ -1,7 +1,7 @@
 import { FiAlertTriangle } from 'react-icons/fi';
 import { useRegister } from '../../hooks/useRegister';
 import { registerStrings } from '../../strings/pt-br/login';
-import AvatarSelector from '../AvatarSelector';
+import AvatarSelector from '../avatar/AvatarSelector';
 
 interface FormRegisterProps {
   onSwitchToLogin: () => void;

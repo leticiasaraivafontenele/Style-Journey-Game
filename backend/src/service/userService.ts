@@ -12,8 +12,11 @@ interface RegisterData {
 
 interface LoginResult {
   user: {
+    id: number;
     username: string;
     email: string;
+    avatarId: number;
+    level: number;
   };
   accessToken: string;
   refreshToken: string;
@@ -62,8 +65,11 @@ export class UserService {
 
     return {
       user: {
+        id: user.id,
         username: user.username,
         email: user.email,
+        avatarId: user.avatarId ?? 1,
+        level: user.level ?? 1,
       },
       accessToken,
       refreshToken,

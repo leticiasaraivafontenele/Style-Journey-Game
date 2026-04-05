@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/userService';
 import { flashMessenger } from '../utils/flashMessenger';
+import { editProfileStrings } from '../strings/pt-br/editProfile';
 
 interface UseEditProfileReturn {
   username: string;
@@ -42,7 +43,7 @@ export const useEditProfile = (): UseEditProfileReturn => {
         setEmail(user.email);
         setAvatarId(user.avatarId);
       } catch {
-        setError('Erro ao carregar dados do perfil');
+        setError(editProfileStrings.errorLoading);
       } finally {
         setIsFetching(false);
       }
@@ -55,7 +56,7 @@ export const useEditProfile = (): UseEditProfileReturn => {
     setError(null);
 
     if (!username) {
-      setError('O nome de usuário é obrigatório');
+      setError(editProfileStrings.errorUsernameRequired);
       return false;
     }
 
@@ -67,10 +68,10 @@ export const useEditProfile = (): UseEditProfileReturn => {
 
       const updated = await userService.updateUser(userId, payload);
       updateProfile(updated.username, updated.avatarId, updated.level);
-      flashMessenger('success', 'Perfil atualizado com sucesso!');
+      flashMessenger('success', editProfileStrings.successUpdate);
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao atualizar perfil');
+      setError(err instanceof Error ? err.message : editProfileStrings.errorUpdate);
       return false;
     } finally {
       setIsLoading(false);
@@ -85,7 +86,7 @@ export const useEditProfile = (): UseEditProfileReturn => {
       await logout();
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao excluir perfil');
+      setError(err instanceof Error ? err.message : editProfileStrings.errorDelete);
       return false;
     } finally {
       setIsLoading(false);

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { avatars } from '../utils/avatarHelper';
-import { avatarStrings } from '../strings/pt-br/avatar';
+import { avatars } from '../../utils/avatarHelper';
+import { avatarStrings } from '../../strings/pt-br/avatar';
 import { TiArrowBackOutline, TiArrowForwardOutline } from 'react-icons/ti';
 
 interface AvatarSelectorProps {
@@ -10,9 +10,10 @@ interface AvatarSelectorProps {
 }
 
 export default function AvatarSelector({ selectedAvatarId, onAvatarSelect, disabled = false }: AvatarSelectorProps) {
-  const [currentIndex, setCurrentIndex] = useState(
-    avatars.findIndex(avatar => avatar.id === selectedAvatarId)
-  );
+  const [currentIndex, setCurrentIndex] = useState(() => {
+    const index = avatars.findIndex(avatar => avatar.id === selectedAvatarId);
+    return index !== -1 ? index : 0;
+  });
 
   const handlePrevious = () => {
     const newIndex = currentIndex === 0 ? avatars.length - 1 : currentIndex - 1;

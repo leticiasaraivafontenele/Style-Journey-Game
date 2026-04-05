@@ -1,14 +1,17 @@
-import { PiXLogoFill } from "react-icons/pi";
-import { paperImage } from "../assets";
+import { PiXLogoFill, PiArrowLeftBold } from "react-icons/pi";
+import { paperImage } from "../../assets";
+import { TiArrowBackOutline } from "react-icons/ti";
+import { modalPaperStrings } from "../../strings/pt-br/components";
 
-interface ModalMapProps {
+interface ModalPaperProps {
   showMap: boolean;
   handleMapCloseClick?: () => void;
   children?: React.ReactNode;
   darkenBackground?: boolean;
+  goBackTo?: () => void;
 }
 
-export default function ModalMap({ showMap, handleMapCloseClick, children, darkenBackground }: ModalMapProps) {
+export default function ModalPaper({ showMap, handleMapCloseClick, children, darkenBackground, goBackTo }: ModalPaperProps) {
   if (!showMap) return null;
 
   return (
@@ -23,7 +26,7 @@ export default function ModalMap({ showMap, handleMapCloseClick, children, darke
       <div className="relative w-240 h-180 overflow-hidden">
         <img
           src={paperImage}
-          alt="mapa"
+          alt={modalPaperStrings.paperAlt}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-180 rotate-90 object-cover"
         />
         <div
@@ -32,6 +35,13 @@ export default function ModalMap({ showMap, handleMapCloseClick, children, darke
         >
           {children}
         </div>
+        {goBackTo && (
+          <TiArrowBackOutline
+            className="absolute bottom-20 left-15 text-amber-900 text-4xl cursor-pointer hover:text-amber-700 transition-colors duration-200"
+            style={{ zIndex: 20 }}
+            onClick={goBackTo}
+          />
+        )}
         <PiXLogoFill
           className="absolute bottom-20 right-15 text-red-800 text-4xl cursor-pointer hover:text-red-600 transition-colors duration-200"
           style={{ zIndex: 20 }}

@@ -1,8 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import MenuPage from './Menu/page';
 import MapPage from './Map/page';
-import ProtectedRoute from '../components/ProtectedRoute';
-import PublicRoute from '../components/PublicRoute';
+import ProtectedRoute from '../components/routes/ProtectedRoute';
+import PublicRoute from '../components/routes/PublicRoute';
 
 export const RoutesPages = () => {
   return (
