@@ -49,7 +49,7 @@ const createUserModel = (sequelize: Sequelize) => {
       defaultValue: 1,
       validate: {
         min: 1,
-        max: 6
+        max: 8
       }
     },
     level: {
