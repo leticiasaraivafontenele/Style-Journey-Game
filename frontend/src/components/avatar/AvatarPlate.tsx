@@ -35,11 +35,11 @@ export default function AvatarPlate({ username, avatarId, level, onSettingsClick
         )}
         <div className="flex flex-col bg-yellow-600/20 p-3 rounded-md">
           {username && (
-            <span className="text-black font-cinzel font-bold text-base leading-tight drop-shadow-sm max-w-30 truncate">
+            <span className="text-black font-start font-bold text-base leading-tight drop-shadow-sm max-w-30 truncate">
               {username}
             </span>
           )}
-          <span className="text-black font-cinzel font-black text-xl leading-tight drop-shadow-sm max-w-30 truncate">
+          <span className="text-black font-start font-black text-xl leading-tight drop-shadow-sm max-w-30 truncate">
             {mapStrings.levelPrefix} {level}
           </span>
         </div>

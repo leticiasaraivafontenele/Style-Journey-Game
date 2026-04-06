@@ -10,13 +10,13 @@ const mapImages = [
 const DISC_PATH: Array<{ top: string; left: string }> = [
   { top: '6.5%', left: '50%' },
   { top: '13%', left: '45%' },
-  { top: '19.5%', left: '46%' },
+  { top: '19.5%', left: '47%' },
   { top: '26%', left: '54%' },
   { top: '32.5%', left: '54%' },
   { top: '39%', left: '54%' },
-  { top: '45.5%', left: '50%' },
+  { top: '45.5%', left: '48%' },
   { top: '52%', left: '46%' },
-  { top: '58.5%', left: '47%' },
+  { top: '58.5%', left: '48%' },
   { top: '65%', left: '53%' },
   { top: '71.5%', left: '55%' },
   { top: '78%', left: '55%' },
@@ -42,7 +42,7 @@ function HorizontalStick({ title }: { title: string }) {
       }}
     >
       {title && (
-        <span className="text-black font-cinzel font-bold text-3xl">
+        <span className="text-black font-start font-bold text-3xl">
           {title}
         </span>
       )}
@@ -68,8 +68,8 @@ function PhaseDisc({ phase, index }: { phase: Phase; index: number }) {
         alt={phase.name}
         className="w-20 h-20 drop-shadow-lg"
       />
-      <span className="text-xs font-bold font-cinzel text-white drop-shadow text-center max-w-20 leading-tight">
-        {phase.name}
+      <span className="-mt-15 text-xl font-bold font-start text-gray-600 drop-shadow text-center">
+        {phase.id}
       </span>
     </div>
   );

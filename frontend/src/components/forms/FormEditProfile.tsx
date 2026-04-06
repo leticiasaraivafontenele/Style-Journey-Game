@@ -33,14 +33,14 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
   if (isFetching) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <p className="text-amber-900 font-cinzel font-bold text-lg">{editProfileStrings.loading}</p>
+        <p className="text-amber-900 font-start font-bold text-lg">{editProfileStrings.loading}</p>
       </div>
     );
   }
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
-      <h2 className="text-4xl font-black font-cinzel text-amber-900">{editProfileStrings.title}</h2>
+      <h2 className="text-4xl font-black font-start text-amber-900">{editProfileStrings.title}</h2>
 
       <form onSubmit={handleSubmit} className="w-full space-y-2 p-6">
         <div id="fields" className="flex w-full items-center">
@@ -120,7 +120,7 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
           <button
             type="submit"
             disabled={isLoading}
-            className="w-60 bg-yellow-600 hover:bg-yellow-700 text-white font-cinzel font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
+            className="w-60 bg-yellow-600 hover:bg-yellow-700 text-white font-start font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
           >
             {isLoading ? editProfileStrings.savingButton : editProfileStrings.saveButton}
           </button>
@@ -129,7 +129,7 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
             type="button"
             onClick={onRequestDelete}
             disabled={isLoading}
-            className="w-60 bg-red-700 hover:bg-red-600 text-white font-cinzel font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
+            className="w-60 bg-red-700 hover:bg-red-600 text-white font-start font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
           >
             {editProfileStrings.deleteButton}
           </button>
