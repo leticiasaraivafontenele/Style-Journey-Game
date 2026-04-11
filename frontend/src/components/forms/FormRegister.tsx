@@ -39,7 +39,7 @@ export default function FormRegister({ onSwitchToLogin }: FormRegisterProps) {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
-      <h2 className="text-4xl font-black font-cinzel text-amber-900">{registerStrings.title}</h2>
+      <h2 className="text-4xl font-black font-start text-amber-900">{registerStrings.title}</h2>
 
       <form onSubmit={handleSubmit} className="w-full space-y-2 p-6">
         <div id='fields' className='flex w-full items-center'>
@@ -122,7 +122,7 @@ export default function FormRegister({ onSwitchToLogin }: FormRegisterProps) {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-60 bg-yellow-600 hover:bg-yellow-700 text-white font-cinzel font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
+            className="w-60 bg-yellow-600 hover:bg-yellow-700 text-white font-start font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
           >
             {isLoading ? registerStrings.loadingButton : registerStrings.registerButton}
           </button>
@@ -131,7 +131,7 @@ export default function FormRegister({ onSwitchToLogin }: FormRegisterProps) {
             type="button"
             onClick={handleSwitch}
             disabled={isLoading}
-            className="w-60 bg-amber-900 hover:bg-amber-700 text-white font-cinzel font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
+            className="w-60 bg-amber-900 hover:bg-amber-700 text-white font-start font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
           >
             {registerStrings.toggleToLogin}
           </button>            

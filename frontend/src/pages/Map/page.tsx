@@ -60,26 +60,26 @@ export default function MapPage() {
         darkenBackground
       >
         <div className="flex flex-col items-center h-full">
-          <h2 className="text-4xl mb-30 font-black font-cinzel text-amber-900">{mapStrings.settingsTitle}</h2>
+          <h2 className="text-4xl mb-30 font-black font-start text-amber-900">{mapStrings.settingsTitle}</h2>
 
           <div className='flex flex-col gap-6'>
             <button
               onClick={() => setActiveModal('editProfile')}
-              className="w-60 bg-yellow-600 hover:bg-yellow-700 text-white font-cinzel font-bold py-3 px-6 rounded-md transition-colors duration-200 cursor-pointer"
+              className="w-70 bg-yellow-600 hover:bg-yellow-700 text-white font-start font-bold py-3 px-6 rounded-md transition-colors duration-200 cursor-pointer"
             >
               {mapStrings.editProfileButton}
             </button>
 
             <button
               onClick={() => setActiveModal('about')}
-              className="w-60 bg-yellow-600 hover:bg-yellow-700 text-white font-cinzel font-bold py-3 px-6 rounded-md transition-colors duration-200 cursor-pointer"
+              className="w-70 bg-yellow-600 hover:bg-yellow-700 text-white font-start font-bold py-3 px-6 rounded-md transition-colors duration-200 cursor-pointer"
             >
               {mapStrings.aboutButton}
             </button>
 
             <button
               onClick={() => setConfirmAction('logout')}
-              className="w-60 bg-red-700 hover:bg-red-600 text-white font-cinzel font-bold py-3 px-6 rounded-md transition-colors duration-200 cursor-pointer"
+              className="w-70 bg-red-700 hover:bg-red-600 text-white font-start font-bold py-3 px-6 rounded-md transition-colors duration-200 cursor-pointer"
             >
               {mapStrings.logoutButton}
             </button>            
@@ -109,7 +109,7 @@ export default function MapPage() {
         darkenBackground
       >
         <div className="flex flex-col items-center justify-center h-full gap-4 px-8 text-center">
-          <h2 className="text-3xl font-black font-cinzel text-amber-900">{mapStrings.aboutTitle}</h2>
+          <h2 className="text-3xl font-black font-start text-amber-900">{mapStrings.aboutTitle}</h2>
           <p className="text-amber-900 font-medium text-base leading-relaxed max-w-xl">
             <strong>{mapStrings.aboutGameName}</strong>{mapStrings.aboutDescription1}
           </p>

@@ -43,7 +43,7 @@ export default function ModalConfirm({
         }}
       >
         <div className='bg-yellow-700/30 rounded-md p-1'>
-          <h3 className="text-xl font-cinzel font-bold text-black mb-1">{title}</h3>
+          <h3 className="text-xl font-start font-bold text-black mb-1">{title}</h3>
           <p className="text-base font-medium text-black mb-4">{message}</p>          
         </div>
 
@@ -51,14 +51,14 @@ export default function ModalConfirm({
           <button
             onClick={onCancel}
             disabled={isLoading}
-            className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-cinzel font-bold text-sm rounded-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+            className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-start font-bold text-sm rounded-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           >
             {cancelLabel}
           </button>
           <button
             onClick={onConfirm}
             disabled={isLoading}
-            className="px-4 py-2 bg-red-800 hover:bg-red-900 text-white font-cinzel font-bold text-sm rounded-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+            className="px-4 py-2 bg-red-800 hover:bg-red-900 text-white font-start font-bold text-sm rounded-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading ? modalConfirmStrings.loadingLabel : confirmLabel}
           </button>

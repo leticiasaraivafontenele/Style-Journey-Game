@@ -32,7 +32,7 @@ export default function MenuPage() {
       <div className={`absolute bottom-2/8 transition-opacity duration-200 ${showMap ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <Button 
           onClick={handlePlayClick}
-          className="bg-yellow-600 hover:bg-yellow-900 text-white text-xl font-bold py-2 px-4 rounded transition-colors duration-200 cursor-pointer font-cinzel"
+          className="bg-yellow-600 hover:bg-yellow-900 text-white text-xl font-bold py-2 px-4 rounded transition-colors duration-200 cursor-pointer font-start"
         >
           {menuStrings.playButton}
         </Button>
