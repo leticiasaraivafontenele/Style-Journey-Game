@@ -1,8 +1,13 @@
+import { useNavigate } from 'react-router-dom';
 import { baseGrayImage, mapModule1Image, mapModule2Image, stickImage } from '../assets';
 import { mapStrings } from '../strings/pt-br/map';
 import { allModulePhases, type Phase } from '../phases';
 
-const mapImages = [
+export interface IModules {
+  image: string;
+  title: string;
+}
+export const modules : IModules[] = [
   { image: mapModule1Image, title: mapStrings.module1Title },
   { image: mapModule2Image, title: mapStrings.module2Title },
 ];
@@ -50,11 +55,12 @@ function HorizontalStick({ title }: { title: string }) {
   );
 }
 
-function PhaseDisc({ phase, index }: { phase: Phase; index: number }) {
+function PhaseDisc({ phase, index, moduleId }: { phase: Phase; index: number; moduleId: number }) {
+  const navigate = useNavigate();
   const position = getDiscPosition(index);
   return (
-    <div
-      className="absolute flex flex-col items-center cursor-pointer"
+    <button
+      className="absolute flex flex-col items-center cursor-pointer bg-transparent border-none p-0"
       style={{
         top: position.top,
         left: position.left,
@@ -62,6 +68,7 @@ function PhaseDisc({ phase, index }: { phase: Phase; index: number }) {
         zIndex: 10,
       }}
       title={phase.name}
+      onClick={() => navigate(`/phase/module${moduleId}/${phase.id}`)}
     >
       <img
         src={baseGrayImage}
@@ -71,28 +78,28 @@ function PhaseDisc({ phase, index }: { phase: Phase; index: number }) {
       <span className="-mt-15 text-xl font-bold font-start text-gray-600 drop-shadow text-center">
         {phase.id}
       </span>
-    </div>
+    </button>
   );
 }
 
 export default function MapBackground() {
   return (
     <div className="w-full">
-      {mapImages.map((mapImage, index) => {
+      {modules.map((module, index) => {
         const moduleData = allModulePhases.find(m => m.moduleId === index + 1);
         const phases = moduleData?.phases ?? [];
 
         return (
           <div key={index} className="w-full">
-            <HorizontalStick title={mapImage.title} />
+            <HorizontalStick title={module.title} />
             <div className="relative w-full">
               <img
-                src={mapImage.image}
+                src={module.image}
                 alt={`${mapStrings.moduleImageAltPrefix} ${index + 1}`}
                 style={{ display: 'block', width: '100%' }}
               />
               {phases.map((phase, phaseIndex) => (
-                <PhaseDisc key={phase.id} phase={phase} index={phaseIndex} />
+                <PhaseDisc key={phase.id} phase={phase} index={phaseIndex} moduleId={index + 1} />
               ))}
             </div>
           </div>

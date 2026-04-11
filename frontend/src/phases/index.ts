@@ -4,11 +4,15 @@ import { module2Phases } from "./module2";
 export interface IPhase {
   id: number;
   name: string;
+  property: string;
   description: string;
+  instructions: string;
   board: string;
-  before: string;
-  after: string;
+  before?: string;
+  after?: string;
 }
+
+export type Phase = IPhase;
 
 export interface IModulePhases {
   moduleId: number;
