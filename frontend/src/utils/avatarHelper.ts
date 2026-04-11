@@ -1,25 +1,20 @@
-import {
-  CharacterSoldierBoyImage,
-  CharacterSoldierGirlImage,
-  CharacterElfBoyImage,
-  CharacterElfGirlImage,
-  CharacterKnightBoyImage,
-  CharacterKnightGirlImage,
-} from '../assets';
+import { character1Image, character2Image, character3Image, character4Image, character5Image, character6Image, character7Image, character8Image } from "../assets";
 
 export interface Avatar {
   id: number;
-  name: string;
   image: string;
 }
 
 export const avatars: Avatar[] = [
-  { id: 1, name: 'Soldier Boy', image: CharacterSoldierBoyImage },
-  { id: 2, name: 'Soldier Girl', image: CharacterSoldierGirlImage },
-  { id: 3, name: 'Elf Boy', image: CharacterElfBoyImage },
-  { id: 4, name: 'Elf Girl', image: CharacterElfGirlImage },
-  { id: 5, name: 'Knight Boy', image: CharacterKnightBoyImage },
-  { id: 6, name: 'Knight Girl', image: CharacterKnightGirlImage },
+  { id: 1, image: character1Image },
+  { id: 2, image: character2Image },
+  { id: 3, image: character3Image },
+  { id: 4, image: character4Image },
+  { id: 5, image: character5Image },
+  { id: 6, image: character6Image },
+  { id: 7, image: character7Image },
+  { id: 8, image: character8Image },
+
 ];
 
 export const getAvatarById = (id: number): Avatar | undefined => {

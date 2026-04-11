@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { flashMessenger } from '../utils/flashMessenger';
 import { loginStrings } from '../strings/pt-br/login';
+import { useAuth } from '../contexts/AuthContext';
 
 interface UseLoginReturn {
   username: string;
@@ -19,9 +21,12 @@ export const useLogin = (): UseLoginReturn => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const handleLogin = async () => {
     setError(null);
-    
+
     if (!username || !password) {
       setError(loginStrings.errorMessage);
       return;
@@ -31,18 +36,23 @@ export const useLogin = (): UseLoginReturn => {
 
     try {
       const response = await authService.login({ username, password });
-      
-      localStorage.setItem('accessToken', response.userData.accessToken);
-      localStorage.setItem('username', response.userData.username);
-      
-      console.log('Login success!', response.message);
-      flashMessenger("success", loginStrings.loginSuccessMessage);
-      
+
+      login(
+        response.userData.accessToken,
+        response.userData.username,
+        response.userData.userId,
+        response.userData.avatarId,
+        response.userData.level,
+      );
+
+      flashMessenger('success', loginStrings.loginSuccessMessage);
+
       setUsername('');
       setPassword('');
+
+      navigate('/map');
     } catch (err) {
       setError(err instanceof Error ? err.message : loginStrings.errorUndefinedMessage);
-
     } finally {
       setIsLoading(false);
     }

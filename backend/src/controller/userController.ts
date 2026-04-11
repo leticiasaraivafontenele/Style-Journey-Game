@@ -49,7 +49,11 @@ export const loginController = async(req: Request<{}, {}, LoginBody>, res: Respo
     return res.status(200).json({
       message: "Login successful!",
       userData: {
+        userId: loginResult.user.id,
         username: loginResult.user.username,
+        email: loginResult.user.email,
+        avatarId: loginResult.user.avatarId,
+        level: loginResult.user.level,
         accessToken: loginResult.accessToken,
         refreshToken: loginResult.refreshToken
       }

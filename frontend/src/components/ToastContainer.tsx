@@ -1,6 +1,7 @@
 import { HiCheck, HiExclamation, HiX } from 'react-icons/hi';
 import { useToast } from '../contexts/ToastContext';
 import type { ToastType } from '../contexts/ToastContext';
+import { toastStrings } from '../strings/pt-br/components';
 
 const getToastColors = (type: ToastType) => {
   switch (type) {
@@ -53,7 +54,7 @@ export const ToastContainer = () => {
               type="button"
               className={`ml-auto -mx-1.5 -my-1.5 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 inline-flex items-center justify-center h-8 w-8 ${colors.text} hover:bg-gray-200 dark:hover:bg-gray-600`}
               onClick={() => removeToast(toast.id)}
-              aria-label="Fechar"
+              aria-label={toastStrings.closeAriaLabel}
             >
               <HiX className="w-5 h-5" />
             </button>

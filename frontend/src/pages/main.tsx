@@ -1,11 +1,24 @@
-import { Route, Routes } from "react-router-dom"
-import MenuPage from "./Menu/page"
+import { Navigate, Route, Routes } from 'react-router-dom';
+import MenuPage from './Menu/page';
+import MapPage from './Map/page';
+import ProtectedRoute from '../components/routes/ProtectedRoute';
+import PublicRoute from '../components/routes/PublicRoute';
 
 export const RoutesPages = () => {
-  return(
+  return (
     <Routes>
-        <Route path={`/`} element={<MenuPage />} />
-        {/* <Route path={`${RouteLogin}`} element={<Login />} /> */}
+      {/* Rotas públicas: redireciona para /map se já estiver logado */}
+      <Route element={<PublicRoute />}>
+        <Route path="/" element={<MenuPage />} />
+      </Route>
+
+      {/* Rotas protegidas: redireciona para / se não estiver logado */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/map" element={<MapPage />} />
+      </Route>
+
+      {/* Qualquer rota não mapeada volta para / */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
-  )
-}
+  );
+};
