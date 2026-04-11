@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 import type { IPhase } from '../../phases';
 import { useAuth } from '../../contexts/AuthContext';
@@ -15,15 +16,44 @@ interface PhaseBaseProps {
   children?: ReactNode;
   moduleName: string;
   backgroundClassname?: string;
+  /**
+   * Called with the current input value when the user clicks "Enviar".
+   * Should return true if the answer is correct, false otherwise.
+   */
+  onEnviar?: (value: string) => boolean;
 }
 
+type SubmitResult = 'correct' | 'incorrect' | null;
 
-export default function PhaseBase({ backgroundImage, paperImage, phase, children, moduleName, backgroundClassname }: PhaseBaseProps) {
-
-  const {avatarId} = useAuth();
+export default function PhaseBase({
+  backgroundImage,
+  paperImage,
+  phase,
+  children,
+  moduleName,
+  backgroundClassname,
+  onEnviar,
+}: PhaseBaseProps) {
+  const { avatarId } = useAuth();
   const avatarImage = getAvatarImageById(avatarId);
-
   const navigate = useNavigate();
+
+  const [inputValue, setInputValue] = useState('');
+  const [submitResult, setSubmitResult] = useState<SubmitResult>(null);
+
+  function handleInputChange(value: string) {
+    setInputValue(value);
+    if (submitResult !== null) setSubmitResult(null);
+  }
+
+  function handleEnviar() {
+    if (!onEnviar) return;
+    const correct = onEnviar(inputValue);
+    setSubmitResult(correct ? 'correct' : 'incorrect');
+  }
+
+  const hasInput = inputValue.trim() !== '';
+  const isCorrect = submitResult === 'correct';
 
   return (
     <div
@@ -48,13 +78,14 @@ export default function PhaseBase({ backgroundImage, paperImage, phase, children
       <div id='content' className="relative w-[65%] h-full flex flex-col justify-between min-h-screen">
         <div className='flex flex-col'>
           <section className='flex w-full h-15 px-5 justify-between items-center'>
-            <h1 className="text-sm font-start  font-bold text-amber-900">
+            <h1 className="text-sm font-start font-bold text-amber-900">
               {moduleName}
             </h1>
             <span className="text-base bg-sky-800 font-semibold rounded-sm px-2 text-white uppercase tracking-widest">
               Fase {phase.id}
-            </span>          
+            </span>
           </section>
+
           <section className='flex flex-col gap-2 my-5 mr-10 ml-7'>
             <div className='flex'>
               <div id="image-container" className="overflow-hidden flex-shrink-0">
@@ -63,50 +94,76 @@ export default function PhaseBase({ backgroundImage, paperImage, phase, children
                   alt="Avatar"
                   className="h-25"
                 />
-              </div>  
-              <div
-              id='title-container'
-              className=''>
+              </div>
+              <div id='title-container'>
                 <p className='text-lg font-semibold'>
                   {renderFormattedText(phase.name)}
                 </p>
                 <div className='w-fit text-sm font-bold bg-lime-700 text-white rounded-xs uppercase py-1 px-2'>
                   {renderFormattedText(phase.property)}
-                </div>                
-              </div>        
+                </div>
+              </div>
             </div>
 
-            <div 
-            id='description-container'
-            className='flex flex-col gap-2'>
+            <div id='description-container' className='flex flex-col gap-2'>
               <p className="text-sm">
                 {renderFormattedText(phase.description)}
               </p>
               <p className="text-sm">
-                <span className='font-semibold'>Objetivo:</span> {renderFormattedText(phase.instructions)}
+                <span className='font-semibold'>Objetivo:</span>{' '}
+                {renderFormattedText(phase.instructions)}
               </p>
             </div>
           </section>
-          <section
-            id='terminal-container'
-            className='p-5'>
-              <TerminalSimulator
-                title='css'
-                afterString={phase.after}
-                beforeString={phase.before}
-                handleSetValue={(value: string)=>{console.log(value)}}
-              />
+
+          <section id='terminal-container' className='p-5'>
+            <TerminalSimulator
+              title='css'
+              afterString={phase.after}
+              beforeString={phase.before}
+              handleSetValue={handleInputChange}
+            />
           </section>
+
+          {submitResult !== null && (
+            <section className='mx-5 mb-1'>
+              {isCorrect ? (
+                <p className="text-sm font-semibold text-green-700 bg-green-100 border border-green-400 rounded-md px-3 py-2">
+                  Correto! Você selecionou os elementos certos.
+                </p>
+              ) : (
+                <p className="text-sm font-semibold text-red-700 bg-red-100 border border-red-400 rounded-md px-3 py-2">
+                  Não foi dessa vez. Tente um seletor diferente!
+                </p>
+              )}
+            </section>
+          )}
+
           <section className='flex self-end gap-2 mr-5'>
-            <button className='bg-sky-800 hover:bg-green-700 text-white text-xs font-start font-bold py-3 px-6 rounded-md transition-colors duration-200 cursor-pointer'>
+            <button
+              disabled
+              className='bg-sky-800 opacity-40 cursor-not-allowed text-white text-xs font-start font-bold py-3 px-6 rounded-md'
+            >
               Avaliar
             </button>
-            <button className='bg-yellow-600 hover:bg-green-700 text-white text-xs font-start font-bold py-3 px-6 rounded-md transition-colors duration-200 cursor-pointer'>
-              Enviar
-            </button>
+            {isCorrect ? (
+              <button
+                className='bg-green-700 hover:bg-green-600 text-white text-xs font-start font-bold py-3 px-6 rounded-md transition-colors duration-200 cursor-pointer'
+              >
+                Próxima Fase
+              </button>
+            ) : (
+              <button
+                onClick={handleEnviar}
+                disabled={!hasInput}
+                className='bg-yellow-600 hover:bg-yellow-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-start font-bold py-3 px-6 rounded-md transition-colors duration-200 cursor-pointer'
+              >
+                Enviar
+              </button>
+            )}
           </section>
         </div>
-        
+
         <section className='flex justify-between justify-self-end gap-2 mr-7 ml-3'>
           <img
             src={logoImage}
@@ -115,17 +172,19 @@ export default function PhaseBase({ backgroundImage, paperImage, phase, children
           />
           <button
             title='Voltar ao Mapa'
-            onClick={()=>{navigate('/map')}}
+            onClick={() => { navigate('/map'); }}
           >
             <TiArrowBackOutline
-              className="text-amber-900 text-4xl cursor-pointer hover:text-amber-700 transition-colors duration-200"/>
+              className="text-amber-900 text-4xl cursor-pointer hover:text-amber-700 transition-colors duration-200"
+            />
           </button>
         </section>
       </div>
 
-      <div 
+      <div
         id='board-container'
-        className="relative w-full flex flex-col h-full min-h-screen">
+        className="relative w-full flex flex-col h-full min-h-screen"
+      >
         {children}
       </div>
     </div>

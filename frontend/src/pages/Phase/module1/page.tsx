@@ -15,6 +15,8 @@ import {
 } from '../../../assets';
 import { modules } from '../../../components/MapBackground';
 import { parseBoardString, type ItemCode } from '../../../utils/boardParser';
+import { checkSelector } from '../../../utils/selectorChecker';
+import TerminalSimulator from '../../../components/TerminalSimulator';
 
 const itemImageMap: Record<ItemCode, string> = {
   r: potionRedImage,
@@ -47,9 +49,9 @@ export default function Module1PhasePage() {
 
   if (!phase) {
     return (
-      <div 
+      <div
         className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
-        style={{ backgroundImage: `url(${menuBackgroundImage})`, backgroundSize: 'cover' }} 
+        style={{ backgroundImage: `url(${menuBackgroundImage})`, backgroundSize: 'cover' }}
       >
         <p className="text-4xl font-bold">Fase não encontrada.</p>
         <LuConstruction size={200} className="text-red-500" />
@@ -59,12 +61,18 @@ export default function Module1PhasePage() {
 
   const boardFloors = parseBoardString(phase.board);
 
+  const handleEnviar = (userSelector: string): boolean => {
+    const result = checkSelector(phase.html, phase.solution, userSelector);
+    return result.correct;
+  };
+
   return (
     <PhaseBase
       backgroundImage={module1PhaseImage}
       paperImage={paperImage}
       phase={phase}
       moduleName={modules[0].title}
+      onEnviar={handleEnviar}
     >
       <div className='h-[65vh] mt-3 ml-20 flex flex-col justify-between w-[60%]'>
         <div id='shelf-high' className='h-30 w-full'>
@@ -76,6 +84,13 @@ export default function Module1PhasePage() {
         <div id='table' className='h-30 w-full'>
           <ShelfItems items={boardFloors.d} />
         </div>
+      </div>
+
+      <div className='absolute bottom-6 right-6 w-72'>
+        <TerminalSimulator
+          title='html'
+          beforeString={phase.html}
+        />
       </div>
     </PhaseBase>
   );
