@@ -120,7 +120,7 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
           <button
             type="submit"
             disabled={isLoading}
-            className="w-60 bg-yellow-600 hover:bg-yellow-700 text-white font-start font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
+            className="w-70 bg-yellow-600 hover:bg-yellow-700 text-sm text-white font-start font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
           >
             {isLoading ? editProfileStrings.savingButton : editProfileStrings.saveButton}
           </button>
@@ -129,7 +129,7 @@ export default function FormEditProfile({ onSuccess, onRequestDelete }: FormEdit
             type="button"
             onClick={onRequestDelete}
             disabled={isLoading}
-            className="w-60 bg-red-700 hover:bg-red-600 text-white font-start font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
+            className="w-70 bg-red-700 hover:bg-red-600 text-sm text-white font-start font-bold py-2 px-4 rounded-md transition-colors duration-200 disabled:bg-gray-400 cursor-pointer disabled:cursor-not-allowed"
           >
             {editProfileStrings.deleteButton}
           </button>

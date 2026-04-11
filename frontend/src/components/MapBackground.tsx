@@ -1,6 +1,6 @@
 import { baseGrayImage, mapModule1Image, mapModule2Image, stickImage } from '../assets';
 import { mapStrings } from '../strings/pt-br/map';
-import { allModulePhases, type Phase } from '../phases/phases';
+import { allModulePhases, type Phase } from '../phases';
 
 const mapImages = [
   { image: mapModule1Image, title: mapStrings.module1Title },

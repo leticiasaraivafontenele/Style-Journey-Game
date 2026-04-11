@@ -1,18 +1,6 @@
-export interface Phase {
-  id: number;
-  name: string;
-  description: string;
-  board: string;
-  before: string;
-  after: string;
-}
+import type { IPhase } from ".";
 
-export interface ModulePhases {
-  moduleId: number;
-  phases: Phase[];
-}
-
-export const module1Phases: Phase[] = [
+export const module1Phases: IPhase[] = [
   {
     id: 1,
     name: "Seletores de Tipo",
@@ -133,11 +121,4 @@ export const module1Phases: Phase[] = [
     before: "#titulo { }",
     after: "#titulo { font-size: 2rem; }",
   },
-];
-
-export const module2Phases: Phase[] = [];
-
-export const allModulePhases: ModulePhases[] = [
-  { moduleId: 1, phases: module1Phases },
-  { moduleId: 2, phases: module2Phases },
 ];
