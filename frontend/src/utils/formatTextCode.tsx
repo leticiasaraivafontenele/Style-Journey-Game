@@ -1,7 +1,7 @@
 export function renderFormattedText(text: string) {
   if (!text) return null;
 
-  const lines = text.split(/\/n|\n/);
+  const lines = text.split(/\/n|\n/).map(line => line.replaceAll('/tab', '    '));
 
   return lines.map((line, lineIndex) => {
     const parts = line.split(/(##[^#]+##)/g);

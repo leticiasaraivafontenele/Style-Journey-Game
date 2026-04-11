@@ -32,6 +32,16 @@ import wood1Image from "./woods/wood1.png";
 import wood2Image from "./woods/wood2.png";
 import wood3Image from "./woods/wood3.png";
 
+//module 1
+import module1PhaseImage from "./module1/module1Phase.png";
+import potionRedImage from "./module1/potionRed.png";
+import potionGreenImage from "./module1/potionGreen.png";
+import potionBlueImage from "./module1/potionBlue.png"; 
+import potionRedTagImage from "./module1/potionRedTag.png";
+import potionGreenTagImage from "./module1/potionGreenTag.png";
+import potionBlueTagImage from "./module1/potionBlueTag.png"; 
+
+
 export {
  baseGrayImage,
  baseGreenImage,
@@ -55,4 +65,11 @@ export {
  gearImage,
  menuBackgroundImage,
  paperImage,
+  module1PhaseImage,
+  potionRedImage,
+  potionGreenImage,
+  potionBlueImage,
+  potionRedTagImage,
+  potionGreenTagImage,
+  potionBlueTagImage,
 };

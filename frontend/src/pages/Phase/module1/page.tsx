@@ -1,35 +1,40 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { module1Phases } from '../../../phases/module1';
-import Module1PhaseBase from '../../../components/phases/Module1PhaseBase';
 import { LuConstruction } from 'react-icons/lu';
 import PhaseBase from '../../../components/phases/PhaseBase';
-import { menuBackgroundImage, paperImage } from '../../../assets';
+import { menuBackgroundImage, module1PhaseImage, paperImage } from '../../../assets';
 import { modules } from '../../../components/MapBackground';
+import TerminalSimulator from '../../../components/TerminalSimulator';
 
 export default function Module1PhasePage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
 
   const phase = module1Phases.find(p => p.id === Number(id));
 
   if (!phase) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl font-bold">Fase não encontrada.</p>
-        <LuConstruction className="ml-2 text-2xl text-gray-500" />
+      <div 
+        className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
+        style={{ backgroundImage: `url(${menuBackgroundImage})`, backgroundSize: 'cover' }} 
+      >
+        <p className="text-4xl font-bold">Fase não encontrada.</p>
+        <LuConstruction size={200} className="text-red-500" />
       </div>
     );
   }
 
   return (
     <PhaseBase
-      backgroundImage={menuBackgroundImage}
+      backgroundImage={module1PhaseImage}
       paperImage={paperImage}
       phase={phase}
       moduleName={modules[0].title}
     >
-      <div className='h-30 w-30 bg-black'>
-        TERMINAL
+      <div className='w-90'>
+        <TerminalSimulator
+          title='html'
+          beforeString={phase.html}
+        />
       </div>
     </PhaseBase>
   );

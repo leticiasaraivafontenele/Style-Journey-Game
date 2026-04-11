@@ -6,6 +6,7 @@ import { renderFormattedText } from '../../utils/formatTextCode';
 import TerminalSimulator from '../TerminalSimulator';
 import { TiArrowBackOutline } from 'react-icons/ti';
 import { logoImage } from '../../assets';
+import { useNavigate } from 'react-router';
 
 interface PhaseBaseProps {
   backgroundImage: string;
@@ -13,17 +14,20 @@ interface PhaseBaseProps {
   phase: IPhase;
   children?: ReactNode;
   moduleName: string;
+  backgroundClassname?: string;
 }
 
 
-export default function PhaseBase({ backgroundImage, paperImage, phase, children, moduleName }: PhaseBaseProps) {
+export default function PhaseBase({ backgroundImage, paperImage, phase, children, moduleName, backgroundClassname }: PhaseBaseProps) {
 
   const {avatarId} = useAuth();
   const avatarImage = getAvatarImageById(avatarId);
 
+  const navigate = useNavigate();
+
   return (
     <div
-      className="relative min-h-screen w-full flex overflow-hidden"
+      className={`relative min-h-screen w-full flex overflow-hidden ${backgroundClassname}`}
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: 'cover',
@@ -111,6 +115,7 @@ export default function PhaseBase({ backgroundImage, paperImage, phase, children
           />
           <button
             title='Voltar ao Mapa'
+            onClick={()=>{navigate('/map')}}
           >
             <TiArrowBackOutline
               className="text-amber-900 text-4xl cursor-pointer hover:text-amber-700 transition-colors duration-200"/>
