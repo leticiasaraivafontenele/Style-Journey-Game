@@ -2,9 +2,43 @@ import { useParams } from 'react-router-dom';
 import { module1Phases } from '../../../phases/module1';
 import { LuConstruction } from 'react-icons/lu';
 import PhaseBase from '../../../components/phases/PhaseBase';
-import { menuBackgroundImage, module1PhaseImage, paperImage } from '../../../assets';
+import {
+  menuBackgroundImage,
+  module1PhaseImage,
+  paperImage,
+  potionRedImage,
+  potionBlueImage,
+  potionGreenImage,
+  potionRedTagImage,
+  potionBlueTagImage,
+  potionGreenTagImage,
+} from '../../../assets';
 import { modules } from '../../../components/MapBackground';
-import TerminalSimulator from '../../../components/TerminalSimulator';
+import { parseBoardString, type ItemCode } from '../../../utils/boardParser';
+
+const itemImageMap: Record<ItemCode, string> = {
+  r: potionRedImage,
+  b: potionBlueImage,
+  g: potionGreenImage,
+  ri: potionRedTagImage,
+  bi: potionBlueTagImage,
+  gi: potionGreenTagImage,
+};
+
+function ShelfItems({ items }: { items: ItemCode[] }) {
+  return (
+    <div className="flex items-end gap-2 h-full px-2">
+      {items.map((code, index) => (
+        <img
+          key={index}
+          src={itemImageMap[code]}
+          alt={code}
+          className="h-full object-contain"
+        />
+      ))}
+    </div>
+  );
+}
 
 export default function Module1PhasePage() {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +57,8 @@ export default function Module1PhasePage() {
     );
   }
 
+  const boardFloors = parseBoardString(phase.board);
+
   return (
     <PhaseBase
       backgroundImage={module1PhaseImage}
@@ -30,11 +66,16 @@ export default function Module1PhasePage() {
       phase={phase}
       moduleName={modules[0].title}
     >
-      <div className='w-90'>
-        <TerminalSimulator
-          title='html'
-          beforeString={phase.html}
-        />
+      <div className='h-[65vh] mt-3 ml-20 flex flex-col justify-between w-[60%]'>
+        <div id='shelf-high' className='h-30 w-full'>
+          <ShelfItems items={boardFloors.t} />
+        </div>
+        <div id='shelf-medium' className='h-30 w-full'>
+          <ShelfItems items={boardFloors.m} />
+        </div>
+        <div id='table' className='h-30 w-full'>
+          <ShelfItems items={boardFloors.d} />
+        </div>
       </div>
     </PhaseBase>
   );

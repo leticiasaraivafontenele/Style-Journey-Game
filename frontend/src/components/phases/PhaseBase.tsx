@@ -88,7 +88,7 @@ export default function PhaseBase({ backgroundImage, paperImage, phase, children
             </div>
           </section>
           <section
-            id='board-container'
+            id='terminal-container'
             className='p-5'>
               <TerminalSimulator
                 title='css'
@@ -124,7 +124,7 @@ export default function PhaseBase({ backgroundImage, paperImage, phase, children
       </div>
 
       <div 
-        id='lude-area'
+        id='board-container'
         className="relative w-full flex flex-col h-full min-h-screen">
         {children}
       </div>

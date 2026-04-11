@@ -10,6 +10,7 @@ export interface IPhase {
   board: string;
   before?: string;
   after?: string;
+  solution: string;
 }
 
 export type Phase = IPhase;

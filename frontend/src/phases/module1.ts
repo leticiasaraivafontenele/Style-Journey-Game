@@ -9,9 +9,10 @@ export const module1Phases: IModule1Phase[] = [
     name: "Sintaxe Básica",
     description: "O Objetivo básico do CSS é permitir que um motor do navegador pinte elementos na página com características específicas como cores, posições, ou decorações. A sintaxe CSS reflete estes objetivos e seus blocos de contrução básicos são:/n- A propriedade é um identificador que possui um nome legível, que define o que será considerado ou editado./n- O valor descreve como o recurso será tratado pelo motor. Cada propriedade possui um conjunto de valores válidos, definida por uma gramática formal, bem como um significado semântico.",
     instructions: "Selecione todas as tag ##<poção>##.",
-    board: "mrbr",
+    board: "mrr",
     after: "{ /n/tabseu-estilo-aqui: valor; /n }",
-    html: "<div class=”office”>/n/tab<prateleira id=”alta”>/n/tab/tab<poção></poção>/n/tab/tab<poção class=”azul”></poção>/n/tab</prateleira>/n/tab<prateleira>/n/tab/tab<poção class=”azul”></poção>/n/tab</prateleira>/n/tab<mesa>/n/tab/tab<poção></poção>/n/tab</mesa>/n</div>"
+    html: "<div class=”office”>/n/tab<prateleira id=”alta”>/n/tab/tab<poção></poção>/n/tab/tab<poção class=”azul”></poção>/n/tab</prateleira>/n/tab<prateleira>/n/tab/tab<poção class=”azul”></poção>/n/tab</prateleira>/n/tab<mesa>/n/tab/tab<poção></poção>/n/tab</mesa>/n</div>",
+    solution: "potion"
   },
   // {
   //   id: 2,
