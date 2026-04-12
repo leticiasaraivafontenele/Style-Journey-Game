@@ -28,6 +28,8 @@ interface PhaseBaseProps {
    * Useful for consumers that need to react to the submission (e.g. board highlighting).
    */
   onSubmit?: (selector: string, correct: boolean) => void;
+  /** Called when the user clicks "Próxima Fase" after a correct answer. */
+  onNextPhase?: () => void;
 }
 
 type SubmitResult = 'correct' | 'incorrect' | null;
@@ -42,6 +44,7 @@ export default function PhaseBase({
   onInputChange,
   onEnviar,
   onSubmit,
+  onNextPhase,
 }: PhaseBaseProps) {
   const { avatarId } = useAuth();
   const avatarImage = getAvatarImageById(avatarId);
@@ -159,6 +162,7 @@ export default function PhaseBase({
             </button>
             {isCorrect ? (
               <button
+                onClick={onNextPhase}
                 className='bg-green-700 hover:bg-green-600 text-white text-xs font-start font-bold py-3 px-6 rounded-md transition-colors duration-200 cursor-pointer'
               >
                 Próxima Fase

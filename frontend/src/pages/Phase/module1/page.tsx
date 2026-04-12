@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { module1Phases } from '../../../phases/module1';
 import { LuConstruction } from 'react-icons/lu';
 import PhaseBase from '../../../components/phases/PhaseBase';
@@ -42,14 +42,6 @@ interface BoardContainerViewProps {
   ringColor: 'blue' | 'green' | 'red';
 }
 
-/**
- * Renders one shelf/table container and its potion items.
- * Each element — the container div AND every potion img — gets a ring
- * independently based on whether its htmlIndex is in the highlighted set.
- * This means selectors that target the container itself (e.g. `prateleira`)
- * highlight the shelf wrapper, while selectors that target individual potions
- * highlight only those potions.
- */
 function BoardContainerView({ shelf, highlightIndices, ringColor }: BoardContainerViewProps) {
   const shelfHighlighted = highlightIndices.has(shelf.htmlIndex);
   const ring = ringColorClass[ringColor];
@@ -79,11 +71,10 @@ function BoardContainerView({ shelf, highlightIndices, ringColor }: BoardContain
 
 export default function Module1PhasePage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const phase = module1Phases.find(p => p.id === Number(id));
 
-  // Highlight state initialised to the solution selection so the user can
-  // immediately see which elements they need to target (blue ring on load).
   const [highlightIndices, setHighlightIndices] = useState<Set<number>>(
     () => new Set(phase ? getSelectedElementIndices(phase.html, phase.solution) : [])
   );
@@ -115,6 +106,16 @@ export default function Module1PhasePage() {
     }
   };
 
+  const handleNextPhase = () => {
+    const currentIndex = module1Phases.findIndex(p => p.id === Number(id));
+    const nextPhase = module1Phases[currentIndex + 1];
+    if (nextPhase) {
+      navigate(`/phase/module1/${nextPhase.id}`);
+    } else {
+      navigate('/map');
+    }
+  };
+
   const handleSubmit = (userSelector: string, correct: boolean) => {
     if (correct) {
       setHighlightIndices(new Set(getSelectedElementIndices(phase.html, phase.solution)));
@@ -127,6 +128,7 @@ export default function Module1PhasePage() {
 
   return (
     <PhaseBase
+      key={phase.id}
       backgroundImage={module1PhaseImage}
       paperImage={paperImage}
       phase={phase}
@@ -134,6 +136,7 @@ export default function Module1PhasePage() {
       onInputChange={handleInputChange}
       onEnviar={handleEnviar}
       onSubmit={handleSubmit}
+      onNextPhase={handleNextPhase}
     >
       <div className='h-[65vh] mt-3 ml-20 flex flex-col justify-between w-[60%]'>
         {boardLayout.containers.map(shelf => (
