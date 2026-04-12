@@ -45,7 +45,7 @@ export const module1Phases: IModule1Phase[] = [
     description:
       'Um ##seletor de tipo## (ou seletor de tag) seleciona todos os elementos de um determinado nome de tag./nPor exemplo, escrever ##poção## seleciona todos os elementos <poção> presentes no documento, independentemente de onde estejam.',
     instructions: 'Selecione todas as tags ##<poção>##.',
-    after: '{ /n/tabcolor: red; /n }',
+    after: '{ /n/tabseu-estilo: aqui; /n }',
     html: BASE_HTML,
     containerSelector: CONTAINER_SELECTOR,
     itemTag: ITEM_TAG,
@@ -58,7 +58,7 @@ export const module1Phases: IModule1Phase[] = [
     description:
       'Um ##seletor de classe## seleciona todos os elementos que possuem um determinado valor no atributo class./nPara usar, coloque um ponto (##.##) antes do nome da classe./nPor exemplo, ##.azul## seleciona todos os elementos que possuem class="azul".',
     instructions: 'Selecione apenas as ##<poção>## com a classe ##azul##.',
-    after: '{ /n/tabcolor: blue; /n }',
+    after: '{ /n/tabseu-estilo: aqui; /n }',
     html: BASE_HTML,
     containerSelector: CONTAINER_SELECTOR,
     itemTag: ITEM_TAG,
