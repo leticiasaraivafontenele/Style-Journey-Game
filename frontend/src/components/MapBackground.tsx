@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { baseGrayImage, mapModule1Image, mapModule2Image, stickImage } from '../assets';
+import { baseGrayImage, baseGreenImage, basePinkImage, mapModule1Image, mapModule2Image, stickImage } from '../assets';
 import { mapStrings } from '../strings/pt-br/map';
 import { allModulePhases, type Phase } from '../phases';
+import { useAuth } from '../contexts/AuthContext';
 
 export interface IModules {
   image: string;
@@ -9,7 +10,7 @@ export interface IModules {
 }
 export const modules : IModules[] = [
   { image: mapModule1Image, title: mapStrings.module1Title },
-  { image: mapModule2Image, title: mapStrings.module2Title },
+  //{ image: mapModule2Image, title: mapStrings.module2Title },
 ];
 
 const DISC_PATH: Array<{ top: string; left: string }> = [
@@ -55,9 +56,24 @@ function HorizontalStick({ title }: { title: string }) {
   );
 }
 
+function checkLevelStatus(phaseId: number): {discImage: string, color: string, canAccess: boolean} {
+  const {level} = useAuth();
+  
+  if(level >= phaseId) {
+    return { discImage: baseGreenImage, color: 'text-lime-700', canAccess: true };
+  }
+  if(level + 1 === phaseId) {
+    return { discImage: basePinkImage, color: 'text-pink-500', canAccess: true };
+  }
+  return { discImage: baseGrayImage, color: 'text-gray-600', canAccess: false };
+}
+
 function PhaseDisc({ phase, index, moduleId }: { phase: Phase; index: number; moduleId: number }) {
+  
   const navigate = useNavigate();
-  const position = getDiscPosition(index);
+  const position = getDiscPosition(index);  
+
+  const {discImage, color, canAccess} = checkLevelStatus(phase.id);
   return (
     <button
       className="absolute flex flex-col items-center cursor-pointer bg-transparent border-none p-0"
@@ -69,13 +85,14 @@ function PhaseDisc({ phase, index, moduleId }: { phase: Phase; index: number; mo
       }}
       title={phase.name}
       onClick={() => navigate(`/phase/module${moduleId}/${phase.id}`)}
+      disabled={!canAccess}
     >
       <img
-        src={baseGrayImage}
+        src={discImage}
         alt={phase.name}
         className="w-20 h-20 drop-shadow-lg"
       />
-      <span className="-mt-15 text-xl font-bold font-start text-gray-600 drop-shadow text-center">
+      <span className={`-mt-15 text-xl font-bold font-start ${color} drop-shadow text-center`}>
         {phase.id}
       </span>
     </button>
@@ -84,7 +101,7 @@ function PhaseDisc({ phase, index, moduleId }: { phase: Phase; index: number; mo
 
 export default function MapBackground() {
   return (
-    <div className="w-full">
+    <div className="w-full bg-lime-500">
       {modules.map((module, index) => {
         const moduleData = allModulePhases.find(m => m.moduleId === index + 1);
         const phases = moduleData?.phases ?? [];

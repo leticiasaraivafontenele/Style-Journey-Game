@@ -32,9 +32,9 @@ const itemImageMap: Record<ItemCode, string> = {
 
 // Full class strings so Tailwind doesn't purge them
 const ringColorClass: Record<'blue' | 'green' | 'red', string> = {
-  blue:  'ring-2 ring-blue-400',
-  green: 'ring-2 ring-green-500',
-  red:   'ring-2 ring-red-500',
+  blue:  'ring-2 ring-blue-400 shadow-blue-400 shadow-xl/50',
+  green: 'ring-2 ring-green-500 shadow-green-500 shadow-xl/50',
+  red:   'ring-2 ring-red-500 shadow-red-500 shadow-xl/50',
 };
 
 interface BoardContainerViewProps {

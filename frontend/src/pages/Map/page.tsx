@@ -8,6 +8,7 @@ import ModalPaper from '../../components/modal/ModalPaper';
 import ModalConfirm from '../../components/modal/ModalConfirm';
 import FormEditProfile from '../../components/forms/FormEditProfile';
 import { mapStrings } from '../../strings/pt-br/map';
+import { logoOutlineImage } from '../../assets';
 
 type ActiveModal = 'none' | 'settings' | 'editProfile' | 'about';
 
@@ -49,6 +50,18 @@ export default function MapPage() {
         avatarId={avatarId}
         level={level}
         onSettingsClick={() => setActiveModal('settings')}
+      />
+
+      <button
+        className='bg-yellow-600 w-100 text-amber-900 rounded-md py-2 font-start text-3xl fixed z-10 bottom-5 left-5 cursor-pointer hover:bg-yellow-500 active:scale-95 transition-transform duration-150'
+        onClick={() => navigate(`/phase/module1/${level + 1}`)}
+      >
+        Jogar
+      </button>
+
+      <img
+        src={logoOutlineImage}
+        className='fixed z-10 bottom-0 right-5 w-40'
       />
 
       <MapBackground />

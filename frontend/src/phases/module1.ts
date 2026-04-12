@@ -64,31 +64,31 @@ export const module1Phases: IModule1Phase[] = [
     itemTag: ITEM_TAG,
     solution: '.azul',
   },
-  // {
-  //   id: 3,
-  //   property: 'Seletor de ID',
-  //   name: 'Seletor de ID',
-  //   description:
-  //     'Um ##seletor de ID## seleciona o elemento que possui um determinado valor no atributo id./nPara usar, coloque um sustenido (###) antes do nome do ID./nPor exemplo, ###alta## seleciona o elemento com id="alta"./nIDs são únicos: cada ID deve aparecer apenas uma vez por página.',
-  //   instructions: 'Selecione a ##<prateleira>## com o id ##alta##.',
-  //   after: '{ /n/tabborder: 2px solid gold; /n }',
-  //   html: BASE_HTML,
-  //   containerSelector: CONTAINER_SELECTOR,
-  //   itemTag: ITEM_TAG,
-  //   solution: '#alta',
-  // },
-  // {
-  //   id: 4,
-  //   property: 'Seletor Descendente',
-  //   name: 'Seletor Descendente',
-  //   description:
-  //     'Um ##seletor descendente## seleciona elementos que estão dentro de outro elemento, em qualquer nível de profundidade./nPara usar, separe dois seletores com um espaço: ##A B## seleciona todos os ##B## que estão dentro de algum ##A##./nPor exemplo, ###alta poção## seleciona apenas as <poção> que estão dentro do elemento com id="alta".',
-  //   instructions:
-  //     'Selecione apenas as ##<poção>## que estão dentro da ##<prateleira>## com id ##alta##.',
-  //   after: '{ /n/tabcolor: gold; /n }',
-  //   html: BASE_HTML,
-  //   containerSelector: CONTAINER_SELECTOR,
-  //   itemTag: ITEM_TAG,
-  //   solution: '#alta poção',
-  // },
+  {
+    id: 3,
+    property: 'Seletor de ID',
+    name: 'Seletor de ID',
+    description:
+      'Um ##seletor de ID## seleciona o elemento que possui um determinado valor no atributo id./nPara usar, coloque um sustenido (###) antes do nome do ID./nPor exemplo, ###alta## seleciona o elemento com id="alta"./nIDs são únicos: cada ID deve aparecer apenas uma vez por página.',
+    instructions: 'Selecione a ##<prateleira>## com o id ##alta##.',
+    after: '{ /n/tabborder: 2px solid gold; /n }',
+    html: BASE_HTML,
+    containerSelector: CONTAINER_SELECTOR,
+    itemTag: ITEM_TAG,
+    solution: '#alta',
+  },
+  {
+    id: 4,
+    property: 'Seletor Descendente',
+    name: 'Seletor Descendente',
+    description:
+      'Um ##seletor descendente## seleciona elementos que estão dentro de outro elemento, em qualquer nível de profundidade./nPara usar, separe dois seletores com um espaço: ##A B## seleciona todos os ##B## que estão dentro de algum ##A##./nPor exemplo, ###alta poção## seleciona apenas as <poção> que estão dentro do elemento com id="alta".',
+    instructions:
+      'Selecione apenas as ##<poção>## que estão dentro da ##<prateleira>## com id ##alta##.',
+    after: '{ /n/tabcolor: gold; /n }',
+    html: BASE_HTML,
+    containerSelector: CONTAINER_SELECTOR,
+    itemTag: ITEM_TAG,
+    solution: '#alta poção',
+  },
 ];
