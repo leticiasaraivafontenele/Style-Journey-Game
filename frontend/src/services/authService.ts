@@ -53,6 +53,15 @@ export const authService = {
     }
   },
 
+  async refreshToken(): Promise<string> {
+    try {
+      const response = await api.post<{ accessToken: string }>('/api/refreshtoken');
+      return response.data.accessToken;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Erro ao renovar token');
+    }
+  },
+
   async logout(): Promise<void> {
     try {
       await api.post('/api/logout');

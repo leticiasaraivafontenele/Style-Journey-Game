@@ -9,6 +9,7 @@ import { TiArrowBackOutline } from 'react-icons/ti';
 import { logoImage } from '../../assets';
 import { useNavigate } from 'react-router';
 import { usePhase } from '../../hooks/usePhase';
+import StarRating from '../StarRating';
 
 interface PhaseBaseProps {
   backgroundImage: string;
@@ -108,10 +109,8 @@ export default function PhaseBase({
             <h1 className="text-sm font-start font-bold text-amber-900">
               {moduleName}
             </h1>
-            {initiallyCorrect && (
-              <div>
-                
-              </div>
+            {isCorrect && (
+                <StarRating rating='perfect'/>
             )}
             <span className="text-base bg-sky-800 font-semibold rounded-sm px-2 text-white uppercase tracking-widest">
               Fase {phase.id}
