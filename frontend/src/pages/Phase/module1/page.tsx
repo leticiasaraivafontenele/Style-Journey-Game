@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { usePhase } from '../../../hooks/usePhase';
 import { module1Phases } from '../../../phases/module1';
 import { LuConstruction } from 'react-icons/lu';
 import PhaseBase from '../../../components/phases/PhaseBase';
@@ -72,6 +73,7 @@ function BoardContainerView({ shelf, highlightIndices, ringColor }: BoardContain
 export default function Module1PhasePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { checkPhaseCompleted } = usePhase();
 
   const phase = module1Phases.find(p => p.id === Number(id));
 
@@ -79,6 +81,25 @@ export default function Module1PhasePage() {
     () => new Set(phase ? getSelectedElementIndices(phase.html, phase.solution) : [])
   );
   const [ringColor, setRingColor] = useState<'blue' | 'green' | 'red'>('blue');
+  const [isCheckingPhase, setIsCheckingPhase] = useState(true);
+  const [initialInputValue, setInitialInputValue] = useState('');
+  const [isAlreadyCompleted, setIsAlreadyCompleted] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    setIsCheckingPhase(true);
+    setInitialInputValue('');
+    setIsAlreadyCompleted(false);
+    setRingColor('blue');
+    checkPhaseCompleted(Number(id)).then(({ completed, levelCompleted }) => {
+      if (completed && levelCompleted?.userSolution) {
+        setInitialInputValue(levelCompleted.userSolution);
+        setIsAlreadyCompleted(true);
+        setRingColor('green');
+      }
+      setIsCheckingPhase(false);
+    });
+  }, [id, checkPhaseCompleted]);
 
   if (!phase) {
     return (
@@ -88,6 +109,17 @@ export default function Module1PhasePage() {
       >
         <p className="text-4xl font-bold">Fase não encontrada.</p>
         <LuConstruction size={200} className="text-red-500" />
+      </div>
+    );
+  }
+
+  if (isCheckingPhase) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center relative overflow-hidden"
+        style={{ backgroundImage: `url(${menuBackgroundImage})`, backgroundSize: 'cover' }}
+      >
+        <div className="w-10 h-10 border-4 border-amber-900 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -111,19 +143,22 @@ export default function Module1PhasePage() {
     const nextPhase = module1Phases[currentIndex + 1];
     if (nextPhase) {
       navigate(`/phase/module1/${nextPhase.id}`);
-    } else {
-      navigate('/map');
-    }
+      return;
+    } 
+    
+    navigate('/map');
   };
 
   const handleSubmit = (userSelector: string, correct: boolean) => {
     if (correct) {
       setHighlightIndices(new Set(getSelectedElementIndices(phase.html, phase.solution)));
       setRingColor('green');
-    } else {
-      setHighlightIndices(new Set(getSelectedElementIndices(phase.html, userSelector)));
-      setRingColor('red');
-    }
+      return;
+    } 
+
+    setHighlightIndices(new Set(getSelectedElementIndices(phase.html, userSelector)));
+    setRingColor('red');
+    
   };
 
   return (
@@ -137,6 +172,8 @@ export default function Module1PhasePage() {
       onEnviar={handleEnviar}
       onSubmit={handleSubmit}
       onNextPhase={handleNextPhase}
+      initialInputValue={initialInputValue}
+      initiallyCorrect={isAlreadyCompleted}
     >
       <div className='h-[65vh] mt-3 ml-20 flex flex-col justify-between w-[60%]'>
         {boardLayout.containers.map(shelf => (

@@ -7,10 +7,11 @@ interface TerminalSimulatorProps {
   afterString?: string;
   handleSetValue?: (value: string) => void;
   inputClassName?: string;
+  initialValue?: string;
 }
 
-export default function TerminalSimulator({ title, beforeString, afterString, handleSetValue, inputClassName }: TerminalSimulatorProps) {
-  const [inputValue, setInputValue] = useState('');
+export default function TerminalSimulator({ title, beforeString, afterString, handleSetValue, inputClassName, initialValue }: TerminalSimulatorProps) {
+  const [inputValue, setInputValue] = useState(initialValue ?? '');
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;

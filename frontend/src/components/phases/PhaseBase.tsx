@@ -8,6 +8,7 @@ import TerminalSimulator from '../TerminalSimulator';
 import { TiArrowBackOutline } from 'react-icons/ti';
 import { logoImage } from '../../assets';
 import { useNavigate } from 'react-router';
+import { usePhase } from '../../hooks/usePhase';
 
 interface PhaseBaseProps {
   backgroundImage: string;
@@ -30,6 +31,10 @@ interface PhaseBaseProps {
   onSubmit?: (selector: string, correct: boolean) => void;
   /** Called when the user clicks "Próxima Fase" after a correct answer. */
   onNextPhase?: () => void;
+  /** Pre-fills the CSS input with the user's previously saved solution. */
+  initialInputValue?: string;
+  /** When true, marks the phase as already correct on mount (shows "Próxima Fase" button). */
+  initiallyCorrect?: boolean;
 }
 
 type SubmitResult = 'correct' | 'incorrect' | null;
@@ -45,13 +50,16 @@ export default function PhaseBase({
   onEnviar,
   onSubmit,
   onNextPhase,
+  initialInputValue,
+  initiallyCorrect,
 }: PhaseBaseProps) {
   const { avatarId } = useAuth();
   const avatarImage = getAvatarImageById(avatarId);
   const navigate = useNavigate();
+  const {savePhase} = usePhase();
 
-  const [inputValue, setInputValue] = useState('');
-  const [submitResult, setSubmitResult] = useState<SubmitResult>(null);
+  const [inputValue, setInputValue] = useState(initialInputValue ?? '');
+  const [submitResult, setSubmitResult] = useState<SubmitResult>(initiallyCorrect ? 'correct' : null);
 
   function handleInputChange(value: string) {
     setInputValue(value);
@@ -63,6 +71,11 @@ export default function PhaseBase({
     if (!onEnviar) return;
     const correct = onEnviar(inputValue);
     setSubmitResult(correct ? 'correct' : 'incorrect');
+
+    if (correct) {
+      savePhase(phase.id, inputValue);
+    }
+
     onSubmit?.(inputValue, correct);
   }
 
@@ -95,6 +108,11 @@ export default function PhaseBase({
             <h1 className="text-sm font-start font-bold text-amber-900">
               {moduleName}
             </h1>
+            {initiallyCorrect && (
+              <div>
+                
+              </div>
+            )}
             <span className="text-base bg-sky-800 font-semibold rounded-sm px-2 text-white uppercase tracking-widest">
               Fase {phase.id}
             </span>
@@ -136,6 +154,7 @@ export default function PhaseBase({
               afterString={phase.after}
               beforeString={phase.before}
               handleSetValue={handleInputChange}
+              initialValue={initialInputValue}
             />
           </section>
 
