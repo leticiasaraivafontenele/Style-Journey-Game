@@ -7,7 +7,6 @@ export interface IPhase {
   property: string;
   description: string;
   instructions: string;
-  board: string;
   before?: string;
   after?: string;
   solution: string;

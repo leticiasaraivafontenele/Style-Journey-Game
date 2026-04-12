@@ -101,7 +101,7 @@ export default function Module1PhasePage() {
     );
   }
 
-  const boardLayout = parseBoardFromHtml(phase.html);
+  const boardLayout = parseBoardFromHtml(phase.html, phase.containerSelector, phase.itemTag);
 
   const handleEnviar = (userSelector: string): boolean => {
     const result = checkSelector(phase.html, phase.solution, userSelector);

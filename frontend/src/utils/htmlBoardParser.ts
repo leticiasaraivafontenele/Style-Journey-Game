@@ -1,8 +1,5 @@
 import type { ItemCode } from './boardParser';
-
-function decodePhaseHtml(raw: string): string {
-  return raw.replace(/\/n/g, '\n').replace(/\/tab/g, '  ');
-}
+import { decodePhaseHtml } from './selectorChecker';
 
 function classesToItemCode(classList: string[]): ItemCode {
   const hasAzul     = classList.includes('azul');
@@ -18,53 +15,57 @@ function classesToItemCode(classList: string[]): ItemCode {
 }
 
 export interface BoardPotionItem {
-  /** Index of this element within querySelectorAll('*') on the phase HTML container */
+  /** Position of this element within querySelectorAll('*') on the phase HTML */
   htmlIndex: number;
   itemCode: ItemCode;
 }
 
 export interface BoardContainer {
-  /** Index of this container element within querySelectorAll('*') */
+  /** Position of this container element within querySelectorAll('*') */
   htmlIndex: number;
   tag: string;
   items: BoardPotionItem[];
 }
 
 export interface BoardLayout {
-  /** One entry per shelf/table container found in the phase HTML, in document order */
+  /** One entry per container found in the phase HTML, in document order */
   containers: BoardContainer[];
 }
 
 /**
  * Parses the phase HTML into a structured board layout.
  *
- * Every element in the result carries its `htmlIndex` — its position in the
- * flat list produced by `container.querySelectorAll('*')`. This index is the
- * same one used by `getSelectedElementIndices` in selectorChecker, so a
- * highlighted-indices set can be applied directly to visual board elements.
+ * @param phaseHtml - Raw HTML string from the phase definition (with /n, /tab tokens).
+ * @param containerSelector - CSS selector for the container/shelf elements
+ *   (e.g. 'prateleira, mesa'). Comes from the phase object so it is never hardcoded.
+ * @param itemTag - Tag name of the individual board items inside each container
+ *   (e.g. 'poção'). Comes from the phase object for the same reason.
+ *
+ * Every element in the result carries its `htmlIndex` — its position in the flat
+ * list produced by querySelectorAll('*'). This matches the indices returned by
+ * `getSelectedElementIndices`, so a highlighted-indices Set can be applied
+ * directly to visual board elements.
  */
-export function parseBoardFromHtml(phaseHtml: string): BoardLayout {
-  const html = decodePhaseHtml(phaseHtml);
+export function parseBoardFromHtml(
+  phaseHtml: string,
+  containerSelector: string,
+  itemTag: string,
+): BoardLayout {
   const root = document.createElement('div');
-  root.innerHTML = html;
+  root.innerHTML = decodePhaseHtml(phaseHtml);
 
-  // Flat list of every element — used to derive stable numeric indices
   const allElements = Array.from(root.querySelectorAll('*'));
 
-  const containerEls = Array.from(root.querySelectorAll('prateleira, mesa'));
-
-  const containers: BoardContainer[] = containerEls.map(el => {
-    const items: BoardPotionItem[] = Array.from(el.querySelectorAll('poção')).map(p => ({
+  const containers: BoardContainer[] = Array.from(
+    root.querySelectorAll(containerSelector),
+  ).map(el => ({
+    htmlIndex: allElements.indexOf(el),
+    tag: el.tagName.toLowerCase(),
+    items: Array.from(el.querySelectorAll(itemTag)).map(p => ({
       htmlIndex: allElements.indexOf(p),
       itemCode: classesToItemCode(Array.from(p.classList)),
-    }));
-
-    return {
-      htmlIndex: allElements.indexOf(el),
-      tag: el.tagName.toLowerCase(),
-      items,
-    };
-  });
+    })),
+  }));
 
   return { containers };
 }

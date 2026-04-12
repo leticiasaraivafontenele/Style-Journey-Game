@@ -1,11 +1,9 @@
 /**
  * Decodes phase HTML tokens into real characters for DOM parsing.
- * /n → newline, /tab → two spaces (for innerHTML parsing)
+ * /n → newline, /tab → two spaces
  */
-function decodePhaseHtml(raw: string): string {
-  return raw
-    .replace(/\/n/g, '\n')
-    .replace(/\/tab/g, '  ');
+export function decodePhaseHtml(raw: string): string {
+  return raw.replace(/\/n/g, '\n').replace(/\/tab/g, '  ');
 }
 
 export interface SelectorCheckResult {
