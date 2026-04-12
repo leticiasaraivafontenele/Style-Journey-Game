@@ -83,3 +83,38 @@ export function checkSelector(
     expectedCount,
   };
 }
+
+/**
+ * Returns the indices (0-based, in querySelectorAll('*') order) of exactly the
+ * elements selected by `selector` against the phase HTML.
+ *
+ * These indices match the `htmlIndex` values in the BoardLayout produced by
+ * `parseBoardFromHtml`, so the result can be passed directly to the board as a
+ * Set<number> for visual highlighting.
+ *
+ * Returns an empty array when the selector is invalid or empty.
+ */
+export function getSelectedElementIndices(
+  phaseHtml: string,
+  selector: string,
+): number[] {
+  if (!selector.trim()) return [];
+
+  const html = decodePhaseHtml(phaseHtml);
+  const container = document.createElement('div');
+  container.innerHTML = html;
+
+  const allElements = Array.from(container.querySelectorAll('*'));
+
+  let selected: Element[];
+  try {
+    selected = Array.from(container.querySelectorAll(selector));
+  } catch {
+    return [];
+  }
+
+  return allElements
+    .map((el, index) => ({ el, index }))
+    .filter(({ el }) => selected.includes(el))
+    .map(({ index }) => index);
+}

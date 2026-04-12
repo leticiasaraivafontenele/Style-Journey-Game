@@ -1,31 +1,12 @@
 import type { IPhase } from '.';
 
 export interface IModule1Phase extends IPhase {
-  /**
-   * HTML structure of the board using fantasy tags (poção, prateleira, mesa…)
-   * with /n and /tab as formatting tokens.
-   *
-   * This serves two purposes:
-   *  1. Displayed to the user as a code reference so they can read the structure.
-   *  2. Used internally to evaluate CSS selectors via querySelectorAll – both the
-   *     solution selector and the user's selector are run against this HTML, and
-   *     the resulting element sets are compared to determine correctness.
-   *
-   * Because verification compares selected elements (not strings), any semantically
-   * equivalent selector is accepted as a correct answer.
-   */
   html: string;
 }
 
-// Shared board layout used by phases 1–4:
-//   top shelf (prateleira #alta):  1 red poção  + 1 blue poção
-//   middle shelf (prateleira):     1 blue poção
-//   table (mesa):                  1 red poção
 const BASE_HTML = `<div class="escritório">/n/tab<prateleira id="alta">/n/tab/tab<poção></poção>/n/tab/tab<poção class="azul"></poção>/n/tab</prateleira>/n/tab<prateleira>/n/tab/tab<poção class="azul"></poção>/n/tab</prateleira>/n/tab<mesa>/n/tab/tab<poção></poção>/n/tab</mesa>/n</div>`;
 
-// t = top shelf, m = middle shelf, d = bottom/table
-// r = red poção,  b = blue poção
-const BASE_BOARD = 'trbmbdr';
+const BASE_BOARD = 'trbmb';
 
 export const module1Phases: IModule1Phase[] = [
   {

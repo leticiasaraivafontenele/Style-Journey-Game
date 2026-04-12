@@ -16,11 +16,18 @@ interface PhaseBaseProps {
   children?: ReactNode;
   moduleName: string;
   backgroundClassname?: string;
+  /** Called on every input keystroke with the current value. */
+  onInputChange?: (value: string) => void;
   /**
    * Called with the current input value when the user clicks "Enviar".
    * Should return true if the answer is correct, false otherwise.
    */
   onEnviar?: (value: string) => boolean;
+  /**
+   * Called right after evaluation with the submitted selector and the result.
+   * Useful for consumers that need to react to the submission (e.g. board highlighting).
+   */
+  onSubmit?: (selector: string, correct: boolean) => void;
 }
 
 type SubmitResult = 'correct' | 'incorrect' | null;
@@ -32,7 +39,9 @@ export default function PhaseBase({
   children,
   moduleName,
   backgroundClassname,
+  onInputChange,
   onEnviar,
+  onSubmit,
 }: PhaseBaseProps) {
   const { avatarId } = useAuth();
   const avatarImage = getAvatarImageById(avatarId);
@@ -44,12 +53,14 @@ export default function PhaseBase({
   function handleInputChange(value: string) {
     setInputValue(value);
     if (submitResult !== null) setSubmitResult(null);
+    onInputChange?.(value);
   }
 
   function handleEnviar() {
     if (!onEnviar) return;
     const correct = onEnviar(inputValue);
     setSubmitResult(correct ? 'correct' : 'incorrect');
+    onSubmit?.(inputValue, correct);
   }
 
   const hasInput = inputValue.trim() !== '';

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { module1Phases } from '../../../phases/module1';
 import { LuConstruction } from 'react-icons/lu';
@@ -14,8 +15,9 @@ import {
   potionGreenTagImage,
 } from '../../../assets';
 import { modules } from '../../../components/MapBackground';
-import { parseBoardString, type ItemCode } from '../../../utils/boardParser';
-import { checkSelector } from '../../../utils/selectorChecker';
+import type { ItemCode } from '../../../utils/boardParser';
+import { checkSelector, getSelectedElementIndices } from '../../../utils/selectorChecker';
+import { parseBoardFromHtml, type BoardContainer } from '../../../utils/htmlBoardParser';
 import TerminalSimulator from '../../../components/TerminalSimulator';
 
 const itemImageMap: Record<ItemCode, string> = {
@@ -27,17 +29,50 @@ const itemImageMap: Record<ItemCode, string> = {
   gi: potionGreenTagImage,
 };
 
-function ShelfItems({ items }: { items: ItemCode[] }) {
+// Full class strings so Tailwind doesn't purge them
+const ringColorClass: Record<'blue' | 'green' | 'red', string> = {
+  blue:  'ring-2 ring-blue-400',
+  green: 'ring-2 ring-green-500',
+  red:   'ring-2 ring-red-500',
+};
+
+interface BoardContainerViewProps {
+  shelf: BoardContainer;
+  highlightIndices: Set<number>;
+  ringColor: 'blue' | 'green' | 'red';
+}
+
+/**
+ * Renders one shelf/table container and its potion items.
+ * Each element — the container div AND every potion img — gets a ring
+ * independently based on whether its htmlIndex is in the highlighted set.
+ * This means selectors that target the container itself (e.g. `prateleira`)
+ * highlight the shelf wrapper, while selectors that target individual potions
+ * highlight only those potions.
+ */
+function BoardContainerView({ shelf, highlightIndices, ringColor }: BoardContainerViewProps) {
+  const shelfHighlighted = highlightIndices.has(shelf.htmlIndex);
+  const ring = ringColorClass[ringColor];
+
   return (
-    <div className="flex items-end gap-2 h-full px-2">
-      {items.map((code, index) => (
-        <img
-          key={index}
-          src={itemImageMap[code]}
-          alt={code}
-          className="h-full object-contain"
-        />
-      ))}
+    <div
+      className={`h-30 w-full flex items-end gap-2 px-2 rounded-sm transition-all duration-300 ${
+        shelfHighlighted ? ring : ''
+      }`}
+    >
+      {shelf.items.map(item => {
+        const itemHighlighted = highlightIndices.has(item.htmlIndex);
+        return (
+          <img
+            key={item.htmlIndex}
+            src={itemImageMap[item.itemCode]}
+            alt={item.itemCode}
+            className={`h-full object-contain rounded-sm transition-all duration-300 ${
+              itemHighlighted ? ring : ''
+            }`}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -46,6 +81,13 @@ export default function Module1PhasePage() {
   const { id } = useParams<{ id: string }>();
 
   const phase = module1Phases.find(p => p.id === Number(id));
+
+  // Highlight state initialised to the solution selection so the user can
+  // immediately see which elements they need to target (blue ring on load).
+  const [highlightIndices, setHighlightIndices] = useState<Set<number>>(
+    () => new Set(phase ? getSelectedElementIndices(phase.html, phase.solution) : [])
+  );
+  const [ringColor, setRingColor] = useState<'blue' | 'green' | 'red'>('blue');
 
   if (!phase) {
     return (
@@ -59,11 +101,28 @@ export default function Module1PhasePage() {
     );
   }
 
-  const boardFloors = parseBoardString(phase.board);
+  const boardLayout = parseBoardFromHtml(phase.html);
 
   const handleEnviar = (userSelector: string): boolean => {
     const result = checkSelector(phase.html, phase.solution, userSelector);
     return result.correct;
+  };
+
+  const handleInputChange = (value: string) => {
+    if (value.trim() === '') {
+      setHighlightIndices(new Set(getSelectedElementIndices(phase.html, phase.solution)));
+      setRingColor('blue');
+    }
+  };
+
+  const handleSubmit = (userSelector: string, correct: boolean) => {
+    if (correct) {
+      setHighlightIndices(new Set(getSelectedElementIndices(phase.html, phase.solution)));
+      setRingColor('green');
+    } else {
+      setHighlightIndices(new Set(getSelectedElementIndices(phase.html, userSelector)));
+      setRingColor('red');
+    }
   };
 
   return (
@@ -72,18 +131,19 @@ export default function Module1PhasePage() {
       paperImage={paperImage}
       phase={phase}
       moduleName={modules[0].title}
+      onInputChange={handleInputChange}
       onEnviar={handleEnviar}
+      onSubmit={handleSubmit}
     >
       <div className='h-[65vh] mt-3 ml-20 flex flex-col justify-between w-[60%]'>
-        <div id='shelf-high' className='h-30 w-full'>
-          <ShelfItems items={boardFloors.t} />
-        </div>
-        <div id='shelf-medium' className='h-30 w-full'>
-          <ShelfItems items={boardFloors.m} />
-        </div>
-        <div id='table' className='h-30 w-full'>
-          <ShelfItems items={boardFloors.d} />
-        </div>
+        {boardLayout.containers.map(shelf => (
+          <BoardContainerView
+            key={shelf.htmlIndex}
+            shelf={shelf}
+            highlightIndices={highlightIndices}
+            ringColor={ringColor}
+          />
+        ))}
       </div>
 
       <div className='absolute bottom-6 right-6 w-72'>
