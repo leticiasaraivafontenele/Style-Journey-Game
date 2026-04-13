@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { baseGrayImage, baseGreenImage, basePinkImage, mapModule1Image, mapModule2Image, stickImage } from '../assets';
+import { baseGrayImage, baseGreenImage, baseOrangeImage, mapModule1Image, mapModule2Image, stickImage } from '../assets';
 import { mapStrings } from '../strings/pt-br/map';
 import { allModulePhases, type Phase } from '../phases';
 import { useAuth } from '../contexts/AuthContext';
+import StarRating from './StarRating';
+import { getAvatarImageById } from '../utils/avatarHelper';
 
 export interface IModules {
   image: string;
@@ -56,24 +58,28 @@ function HorizontalStick({ title }: { title: string }) {
   );
 }
 
-function checkLevelStatus(phaseId: number): {discImage: string, color: string, canAccess: boolean} {
+function checkLevelStatus(phaseId: number): {discImage: string, color: string, canAccess: boolean, showStars: boolean, showAvatar: boolean} {
   const {level} = useAuth();
   
   if(level >= phaseId) {
-    return { discImage: baseGreenImage, color: 'text-lime-700', canAccess: true };
+    return { discImage: baseGreenImage, color: 'text-lime-700', canAccess: true, showStars: true, showAvatar: false };
   }
   if(level + 1 === phaseId) {
-    return { discImage: basePinkImage, color: 'text-pink-500', canAccess: true };
+    return { discImage: baseOrangeImage, color: 'text-orange-600', canAccess: true, showStars: false, showAvatar: true };
   }
-  return { discImage: baseGrayImage, color: 'text-gray-600', canAccess: false };
+  return { discImage: baseGrayImage, color: 'text-gray-600', canAccess: false, showStars: false, showAvatar: false };
 }
 
 function PhaseDisc({ phase, index, moduleId }: { phase: Phase; index: number; moduleId: number }) {
   
   const navigate = useNavigate();
-  const position = getDiscPosition(index);  
+  const position = getDiscPosition(index);
 
-  const {discImage, color, canAccess} = checkLevelStatus(phase.id);
+  const {avatarId} = useAuth();
+  const avatarImage = getAvatarImageById(avatarId);
+  
+
+  const {discImage, color, canAccess, showStars, showAvatar} = checkLevelStatus(phase.id);
   return (
     <button
       className="absolute flex flex-col items-center cursor-pointer bg-transparent border-none p-0"
@@ -87,12 +93,19 @@ function PhaseDisc({ phase, index, moduleId }: { phase: Phase; index: number; mo
       onClick={() => navigate(`/phase/module${moduleId}/${phase.id}`)}
       disabled={!canAccess}
     >
+      {showAvatar && avatarImage && (
+        <img
+          src={avatarImage}
+          className='absolute z-5 w-27 bottom-20 hover:opacity-60 transition-opacity'   
+        /> 
+      )}
       <img
         src={discImage}
         alt={phase.name}
-        className="w-20 h-20 drop-shadow-lg"
+        className="w-30 h-30 drop-shadow-lg"
       />
-      <span className={`-mt-15 text-xl font-bold font-start ${color} drop-shadow text-center`}>
+      {showStars && <StarRating className='absolute -bottom-1' rating='perfect'/>}
+      <span className={`absolute bottom-13 text-2xl font-bold font-start ${color} drop-shadow text-center`}>
         {phase.id}
       </span>
     </button>

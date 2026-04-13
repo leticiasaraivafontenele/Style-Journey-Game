@@ -4,6 +4,7 @@ type StarRatingValue = 'perfect' | 'ok' | 'bad';
 
 interface StarRatingProps {
   rating?: StarRatingValue;
+  className?: string;
 }
 
 const STAR_COUNT = 3;
@@ -14,11 +15,11 @@ const filledCountByRating: Record<StarRatingValue, number> = {
   perfect: 3,
 };
 
-export default function StarRating({ rating }: StarRatingProps) {
+export default function StarRating({ rating, className }: StarRatingProps) {
   const filledCount = rating ? filledCountByRating[rating] : 0;
 
   return (
-    <div className="flex items-center gap-1 shadow-lg bg-amber-900 rounded-sm px-2 py-1">
+    <div className={`flex items-center gap-1 ${className}`}>
       {Array.from({ length: STAR_COUNT }, (_, i) => {
         const isFilled = i < filledCount;
         if (isFilled) {

@@ -20,7 +20,7 @@ import character8Image from "./characters/character8.png";
 // Bases
 import baseGrayImage from "./bases/baseGray.png";
 import baseGreenImage from "./bases/baseGreen.png";
-import basePinkImage from "./bases/basePink.png";
+import baseOrangeImage from "./bases/baseOrange.png";
 
 // Maps
 import mapModule1Image from "./maps/mapModule1.png";
@@ -45,7 +45,7 @@ import potionBlueTagImage from "./module1/potionBlueTag.png";
 export {
  baseGrayImage,
  baseGreenImage,
- basePinkImage,
+ baseOrangeImage,
  mapModule1Image,
  mapModule2Image,
  stickImage,

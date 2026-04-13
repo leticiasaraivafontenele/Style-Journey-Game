@@ -110,7 +110,10 @@ export default function PhaseBase({
               {moduleName}
             </h1>
             {isCorrect && (
+              <div className=' shadow-lg bg-amber-900 rounded-sm px-2 py-1'>
                 <StarRating rating='perfect'/>
+              </div>
+                
             )}
             <span className="text-base bg-sky-800 font-semibold rounded-sm px-2 text-white uppercase tracking-widest">
               Fase {phase.id}
