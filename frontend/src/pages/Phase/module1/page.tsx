@@ -84,17 +84,23 @@ export default function Module1PhasePage() {
   const [isCheckingPhase, setIsCheckingPhase] = useState(true);
   const [initialInputValue, setInitialInputValue] = useState('');
   const [isAlreadyCompleted, setIsAlreadyCompleted] = useState(false);
+  const [initialQuality, setInitialQuality] = useState<number | null>(null);
+  const [initialEvaluation, setInitialEvaluation] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
     setIsCheckingPhase(true);
     setInitialInputValue('');
     setIsAlreadyCompleted(false);
+    setInitialQuality(null);
+    setInitialEvaluation(null);
     setRingColor('blue');
     checkPhaseCompleted(Number(id)).then(({ completed, levelCompleted }) => {
       if (completed && levelCompleted?.userSolution) {
         setInitialInputValue(levelCompleted.userSolution);
         setIsAlreadyCompleted(true);
+        setInitialQuality(levelCompleted.quality ?? null);
+        setInitialEvaluation(levelCompleted.evaluation ?? null);
         setRingColor('green');
       }
       setIsCheckingPhase(false);
@@ -174,6 +180,15 @@ export default function Module1PhasePage() {
       onNextPhase={handleNextPhase}
       initialInputValue={initialInputValue}
       initiallyCorrect={isAlreadyCompleted}
+      initialQuality={initialQuality}
+      initialEvaluation={initialEvaluation}
+      evaluationContext={{
+        property: phase.property,
+        description: phase.description,
+        instructions: phase.instructions,
+        solution: phase.solution,
+        html: phase.html,
+      }}
     >
       <div className='h-[65vh] mt-3 ml-20 flex flex-col justify-between w-[60%]'>
         {boardLayout.containers.map(shelf => (

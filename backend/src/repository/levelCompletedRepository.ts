@@ -27,6 +27,8 @@ export class LevelCompletedRepository {
     idUser: number;
     level: number;
     userSolution: string;
+    quality?: number | null;
+    evaluation?: string | null;
   }): Promise<LevelCompletedInstance> {
     if (!LevelCompleted) {
       throw new Error("LevelCompleted model not initialized");
@@ -36,7 +38,7 @@ export class LevelCompletedRepository {
 
   async update(
     record: LevelCompletedInstance,
-    data: Partial<{ userSolution: string }>
+    data: Partial<{ userSolution: string; quality: number | null; evaluation: string | null }>
   ): Promise<LevelCompletedInstance> {
     return await record.update(data);
   }

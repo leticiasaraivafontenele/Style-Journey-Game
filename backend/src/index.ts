@@ -7,6 +7,7 @@ import { dbConnection } from "./db/dbconnetion.js";
 import router from "./route/routes.js";
 import cookie from "cookie-parser";
 import { serverConfig } from "./config/database.js";
+import { aiEvaluationService } from "./service/aiEvaluationService.js";
 
 const app = express();
 
@@ -28,6 +29,7 @@ const startServer = async () => {
     const server = app.listen(serverConfig.port, () => {
       console.log(`Server is running on port ${serverConfig.port}`);
       console.log(`Environment: ${serverConfig.nodeEnv}`);
+      void aiEvaluationService.warmup();
     });
 
     server.on('error', (error: NodeJS.ErrnoException) => {

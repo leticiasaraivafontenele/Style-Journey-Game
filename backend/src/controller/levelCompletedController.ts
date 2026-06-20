@@ -1,10 +1,18 @@
 import { Request, Response } from "express";
 import { levelCompletedService } from "../service/levelCompletedService.js";
+import { ChallengeContext } from "../service/aiEvaluationService.js";
 
 interface SaveLevelBody {
   idUser: number;
   level: number;
   userSolution: string;
+}
+
+interface EvaluateLevelBody {
+  idUser: number;
+  level: number;
+  userSolution: string;
+  challenge: ChallengeContext;
 }
 
 export const saveLevelController = async (
@@ -23,6 +31,31 @@ export const saveLevelController = async (
       return res.status(400).json({ message: "idUser, level and userSolution are required." });
     }
     console.error("Error in saveLevelController:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const evaluateLevelController = async (
+  req: Request<{}, {}, EvaluateLevelBody>,
+  res: Response
+): Promise<Response> => {
+  try {
+    const record = await levelCompletedService.evaluateAndSaveLevel(req.body);
+
+    return res.status(200).json({
+      message: "Level evaluated successfully!",
+      data: record
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "MISSING_FIELDS") {
+      return res.status(400).json({ message: "idUser, level, userSolution and challenge are required." });
+    }
+    if (error instanceof Error && error.message === "AI_UNAVAILABLE") {
+      return res.status(503).json({
+        message: "Não foi possível avaliar sua resposta agora. Tente novamente em instantes."
+      });
+    }
+    console.error("Error in evaluateLevelController:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -2,17 +2,26 @@ import { useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { levelService } from '../services/levelService';
 import { userService } from '../services/userService';
-import type { LevelCompleted } from '../services/levelService';
+import type { LevelCompleted, ChallengeContext } from '../services/levelService';
 
 export interface PhaseCheckResult {
   completed: boolean;
   levelCompleted: LevelCompleted | null;
 }
 
+export interface PhaseEvaluationResult {
+  quality: number | null;
+  evaluation: string | null;
+}
+
 interface UsePhaseReturn {
   checkPhaseCompleted: (level: number) => Promise<PhaseCheckResult>;
   updateUserLevel: (level: number) => Promise<void>;
-  savePhase: (level: number, userSolution: string) => Promise<void>;
+  evaluatePhase: (
+    level: number,
+    userSolution: string,
+    challenge: ChallengeContext
+  ) => Promise<PhaseEvaluationResult>;
 }
 
 export const usePhase = (): UsePhaseReturn => {
@@ -38,27 +47,24 @@ export const usePhase = (): UsePhaseReturn => {
     }
   }, [userId, currentLevel, updateProfile]);
 
-  const savePhase = useCallback(async (level: number, userSolution: string): Promise<void> => {
-    if (!userId) return;
-    try {
-      const { completed, levelCompleted } = await checkPhaseCompleted(level);
-      if (!completed) {
-        await levelService.saveLevel({ idUser: userId, level, userSolution });
-        await updateUserLevel(level);
+  const evaluatePhase = useCallback(async (
+    level: number,
+    userSolution: string,
+    challenge: ChallengeContext
+  ): Promise<PhaseEvaluationResult> => {
+    if (!userId) throw new Error('Usuário não autenticado');
 
-        return;
-      } 
-      if (levelCompleted) {
-        await levelService.updateLevel(levelCompleted.id, { userSolution });
-      }
-    } catch (err) {
-      console.error('Erro ao salvar fase:', err);
-    }
-  }, [userId, checkPhaseCompleted, updateUserLevel]);
+    // The local AI evaluates and the backend persists the result in one call.
+    // On failure this throws, so the phase is NOT completed and the user retries.
+    const record = await levelService.evaluateLevel({ idUser: userId, level, userSolution, challenge });
+    await updateUserLevel(level);
+
+    return { quality: record.quality ?? null, evaluation: record.evaluation ?? null };
+  }, [userId, updateUserLevel]);
 
   return {
     checkPhaseCompleted,
     updateUserLevel,
-    savePhase,
+    evaluatePhase,
   };
 };

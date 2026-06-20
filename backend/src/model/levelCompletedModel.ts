@@ -5,9 +5,12 @@ interface LevelCompletedAttributes {
   idUser: number;
   level: number;
   userSolution: string;
+  quality: number | null;
+  evaluation: string | null;
 }
 
-interface LevelCompletedCreationAttributes extends Optional<LevelCompletedAttributes, 'id'> {}
+interface LevelCompletedCreationAttributes
+  extends Optional<LevelCompletedAttributes, 'id' | 'quality' | 'evaluation'> {}
 
 export interface LevelCompletedInstance
   extends Model<LevelCompletedAttributes, LevelCompletedCreationAttributes>,
@@ -35,6 +38,18 @@ const createLevelCompletedModel = (sequelize: Sequelize) => {
     userSolution: {
       type: DataTypes.TEXT,
       allowNull: false
+    },
+    quality: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      validate: {
+        min: 1,
+        max: 3
+      }
+    },
+    evaluation: {
+      type: DataTypes.STRING(300),
+      allowNull: true
     }
   });
 

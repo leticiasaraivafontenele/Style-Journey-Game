@@ -18,3 +18,10 @@ export const serverConfig = {
   port: parseInt(process.env.PORT || "5000"),
   nodeEnv: process.env.NODE_ENV || "development",
 };
+
+export const aiConfig = {
+  ollamaUrl: process.env.OLLAMA_URL || "http://localhost:11434",
+  model: process.env.OLLAMA_MODEL || "qwen3:8b",
+  timeoutMs: parseInt(process.env.OLLAMA_TIMEOUT_MS || "120000"),
+  keepAlive: process.env.OLLAMA_KEEP_ALIVE || "30m",
+};

@@ -1,5 +1,6 @@
 import { levelCompletedRepository } from "../repository/levelCompletedRepository.js";
 import { LevelCompletedInstance } from "../model/levelCompletedModel.js";
+import { aiEvaluationService, ChallengeContext } from "./aiEvaluationService.js";
 
 export class LevelCompletedService {
   async saveLevel(data: {
@@ -18,6 +19,40 @@ export class LevelCompletedService {
     }
 
     return await levelCompletedRepository.create(data);
+  }
+
+  async evaluateAndSaveLevel(data: {
+    idUser: number;
+    level: number;
+    userSolution: string;
+    challenge: ChallengeContext;
+  }): Promise<LevelCompletedInstance> {
+    if (!data.idUser || data.level === undefined || !data.userSolution || !data.challenge) {
+      throw new Error("MISSING_FIELDS");
+    }
+
+    const { quality, evaluation } = await aiEvaluationService.evaluate(
+      data.challenge,
+      data.userSolution
+    );
+
+    const existing = await levelCompletedRepository.findByUserAndLevel(data.idUser, data.level);
+
+    if (existing) {
+      return await levelCompletedRepository.update(existing, {
+        userSolution: data.userSolution,
+        quality,
+        evaluation,
+      });
+    }
+
+    return await levelCompletedRepository.create({
+      idUser: data.idUser,
+      level: data.level,
+      userSolution: data.userSolution,
+      quality,
+      evaluation,
+    });
   }
 
   async getLevelsByUser(idUser: number): Promise<LevelCompletedInstance[]> {

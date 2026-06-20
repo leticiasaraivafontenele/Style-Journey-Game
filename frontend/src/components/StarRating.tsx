@@ -15,6 +15,12 @@ const filledCountByRating: Record<StarRatingValue, number> = {
   perfect: 3,
 };
 
+export function qualityToRating(quality?: number | null): StarRatingValue {
+  if (quality === 1) return 'bad';
+  if (quality === 2) return 'ok';
+  return 'perfect';
+}
+
 export default function StarRating({ rating, className }: StarRatingProps) {
   const filledCount = rating ? filledCountByRating[rating] : 0;
 
