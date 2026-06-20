@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import MenuPage from './Menu/page';
 import MapPage from './Map/page';
+import Module1PhasePage from './Phase/module1/page';
 import ProtectedRoute from '../components/routes/ProtectedRoute';
 import PublicRoute from '../components/routes/PublicRoute';
 
@@ -15,6 +16,7 @@ export const RoutesPages = () => {
       {/* Rotas protegidas: redireciona para / se não estiver logado */}
       <Route element={<ProtectedRoute />}>
         <Route path="/map" element={<MapPage />} />
+        <Route path="/phase/module1/:id" element={<Module1PhasePage />} />
       </Route>
 
       {/* Qualquer rota não mapeada volta para / */}

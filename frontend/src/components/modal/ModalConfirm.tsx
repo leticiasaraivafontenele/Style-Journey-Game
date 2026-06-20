@@ -51,14 +51,14 @@ export default function ModalConfirm({
           <button
             onClick={onCancel}
             disabled={isLoading}
-            className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-start font-bold text-sm rounded-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+            className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-start font-bold text-xs rounded-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           >
             {cancelLabel}
           </button>
           <button
             onClick={onConfirm}
             disabled={isLoading}
-            className="px-4 py-2 bg-red-800 hover:bg-red-900 text-white font-start font-bold text-sm rounded-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+            className="px-4 py-2 bg-red-800 hover:bg-red-900 text-white font-start font-bold text-xs rounded-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading ? modalConfirmStrings.loadingLabel : confirmLabel}
           </button>

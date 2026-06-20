@@ -10,7 +10,7 @@ export const databaseConfig = {
 export const jwtConfig = {
   accessSecretKey: process.env.ACCESS_SECRET_KEY || "access_secret_key",
   refreshSecretKey: process.env.REFRESH_SECRET_KEY || "refresh_secret_key",
-  accessTokenExpiry: "15min",
+  accessTokenExpiry: "120min",
   refreshTokenExpiry: "7d",
 };
 

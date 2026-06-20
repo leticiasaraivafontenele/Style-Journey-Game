@@ -1,10 +1,18 @@
-import { baseGrayImage, mapModule1Image, mapModule2Image, stickImage } from '../assets';
+import { useNavigate } from 'react-router-dom';
+import { baseGrayImage, baseGreenImage, baseOrangeImage, mapModule1Image, mapModule2Image, stickImage } from '../assets';
 import { mapStrings } from '../strings/pt-br/map';
-import { allModulePhases, type Phase } from '../phases/phases';
+import { allModulePhases, type Phase } from '../phases';
+import { useAuth } from '../contexts/AuthContext';
+import StarRating from './StarRating';
+import { getAvatarImageById } from '../utils/avatarHelper';
 
-const mapImages = [
+export interface IModules {
+  image: string;
+  title: string;
+}
+export const modules : IModules[] = [
   { image: mapModule1Image, title: mapStrings.module1Title },
-  { image: mapModule2Image, title: mapStrings.module2Title },
+  //{ image: mapModule2Image, title: mapStrings.module2Title },
 ];
 
 const DISC_PATH: Array<{ top: string; left: string }> = [
@@ -50,11 +58,31 @@ function HorizontalStick({ title }: { title: string }) {
   );
 }
 
-function PhaseDisc({ phase, index }: { phase: Phase; index: number }) {
+function checkLevelStatus(phaseId: number): {discImage: string, color: string, canAccess: boolean, showStars: boolean, showAvatar: boolean} {
+  const {level} = useAuth();
+  
+  if(level >= phaseId) {
+    return { discImage: baseGreenImage, color: 'text-lime-700', canAccess: true, showStars: true, showAvatar: false };
+  }
+  if(level + 1 === phaseId) {
+    return { discImage: baseOrangeImage, color: 'text-orange-600', canAccess: true, showStars: false, showAvatar: true };
+  }
+  return { discImage: baseGrayImage, color: 'text-gray-600', canAccess: false, showStars: false, showAvatar: false };
+}
+
+function PhaseDisc({ phase, index, moduleId }: { phase: Phase; index: number; moduleId: number }) {
+  
+  const navigate = useNavigate();
   const position = getDiscPosition(index);
+
+  const {avatarId} = useAuth();
+  const avatarImage = getAvatarImageById(avatarId);
+  
+
+  const {discImage, color, canAccess, showStars, showAvatar} = checkLevelStatus(phase.id);
   return (
-    <div
-      className="absolute flex flex-col items-center cursor-pointer"
+    <button
+      className="absolute flex flex-col items-center cursor-pointer bg-transparent border-none p-0"
       style={{
         top: position.top,
         left: position.left,
@@ -62,37 +90,46 @@ function PhaseDisc({ phase, index }: { phase: Phase; index: number }) {
         zIndex: 10,
       }}
       title={phase.name}
+      onClick={() => navigate(`/phase/module${moduleId}/${phase.id}`)}
+      disabled={!canAccess}
     >
+      {showAvatar && avatarImage && (
+        <img
+          src={avatarImage}
+          className='absolute z-5 w-27 bottom-20 hover:opacity-60 transition-opacity'   
+        /> 
+      )}
       <img
-        src={baseGrayImage}
+        src={discImage}
         alt={phase.name}
-        className="w-20 h-20 drop-shadow-lg"
+        className="w-30 h-30 drop-shadow-lg"
       />
-      <span className="-mt-15 text-xl font-bold font-start text-gray-600 drop-shadow text-center">
+      {showStars && <StarRating className='absolute -bottom-1' rating='perfect'/>}
+      <span className={`absolute bottom-13 text-2xl font-bold font-start ${color} drop-shadow text-center`}>
         {phase.id}
       </span>
-    </div>
+    </button>
   );
 }
 
 export default function MapBackground() {
   return (
-    <div className="w-full">
-      {mapImages.map((mapImage, index) => {
+    <div className="w-full bg-lime-500">
+      {modules.map((module, index) => {
         const moduleData = allModulePhases.find(m => m.moduleId === index + 1);
         const phases = moduleData?.phases ?? [];
 
         return (
           <div key={index} className="w-full">
-            <HorizontalStick title={mapImage.title} />
+            <HorizontalStick title={module.title} />
             <div className="relative w-full">
               <img
-                src={mapImage.image}
+                src={module.image}
                 alt={`${mapStrings.moduleImageAltPrefix} ${index + 1}`}
                 style={{ display: 'block', width: '100%' }}
               />
               {phases.map((phase, phaseIndex) => (
-                <PhaseDisc key={phase.id} phase={phase} index={phaseIndex} />
+                <PhaseDisc key={phase.id} phase={phase} index={phaseIndex} moduleId={index + 1} />
               ))}
             </div>
           </div>
