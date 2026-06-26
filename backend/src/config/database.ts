@@ -21,7 +21,7 @@ export const serverConfig = {
 
 export const aiConfig = {
   ollamaUrl: process.env.OLLAMA_URL || "http://localhost:11434",
-  model: process.env.OLLAMA_MODEL || "qwen3:8b",
+  model: process.env.OLLAMA_MODEL || "qwen3:4b",
   timeoutMs: parseInt(process.env.OLLAMA_TIMEOUT_MS || "120000"),
   keepAlive: process.env.OLLAMA_KEEP_ALIVE || "30m",
 };
