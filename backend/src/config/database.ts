@@ -20,8 +20,8 @@ export const serverConfig = {
 };
 
 export const aiConfig = {
-  ollamaUrl: process.env.OLLAMA_URL || "http://localhost:11434",
-  model: process.env.OLLAMA_MODEL || "qwen3:4b",
-  timeoutMs: parseInt(process.env.OLLAMA_TIMEOUT_MS || "120000"),
-  keepAlive: process.env.OLLAMA_KEEP_ALIVE || "30m",
+  geminiApiKey: process.env.GEMINI_API_KEY || "",
+  geminiUrl: process.env.GEMINI_URL || "https://generativelanguage.googleapis.com/v1beta",
+  model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+  timeoutMs: parseInt(process.env.GEMINI_TIMEOUT_MS || "120000"),
 };

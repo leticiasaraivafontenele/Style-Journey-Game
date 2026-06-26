@@ -15,13 +15,14 @@ export interface AiEvaluation {
 
 const EVALUATION_MAX_LENGTH = 300;
 
-const RESPONSE_FORMAT = {
-  type: "object",
+const RESPONSE_SCHEMA = {
+  type: "OBJECT",
   properties: {
-    quality: { type: "integer", enum: [1, 2, 3] },
-    evaluation: { type: "string" },
+    quality: { type: "INTEGER" },
+    evaluation: { type: "STRING" },
   },
   required: ["quality", "evaluation"],
+  propertyOrdering: ["quality", "evaluation"],
 } as const;
 
 const SYSTEM_PROMPT = `Você é um avaliador especialista em CSS de uma plataforma gamificada de ensino.
@@ -69,23 +70,11 @@ function buildUserPrompt(challenge: ChallengeContext, userSolution: string): str
 export class AiEvaluationService {
 
   async warmup(): Promise<void> {
-    try {
-      const response = await fetch(`${aiConfig.ollamaUrl}/api/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: aiConfig.model, keep_alive: aiConfig.keepAlive }),
-      });
-      if (response.ok) {
-        console.log(`Ollama model "${aiConfig.model}" warmed up and ready.`);
-      } else {
-        console.warn(`Ollama warmup returned status ${response.status} (model will load on first request).`);
-      }
-    } catch (error) {
-      console.warn(
-        "Ollama warmup failed (model will load on first request):",
-        error instanceof Error ? error.message : error
-      );
+    if (!aiConfig.geminiApiKey) {
+      console.warn("GEMINI_API_KEY not set — AI evaluation will fail until configured.");
+      return;
     }
+    console.log(`Gemini model "${aiConfig.model}" configured and ready.`);
   }
 
   async evaluate(challenge: ChallengeContext, userSolution: string): Promise<AiEvaluation> {
@@ -94,41 +83,46 @@ export class AiEvaluationService {
 
     let response: Response;
     try {
-      response = await fetch(`${aiConfig.ollamaUrl}/api/chat`, {
+      response = await fetch(`${aiConfig.geminiUrl}/models/${aiConfig.model}:generateContent`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": aiConfig.geminiApiKey,
+        },
         signal: controller.signal,
         body: JSON.stringify({
-          model: aiConfig.model,
-          stream: false,
-          think: false,
-          format: RESPONSE_FORMAT,
-          keep_alive: aiConfig.keepAlive,
-          options: { temperature: 0.2 },
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            { role: "user", content: buildUserPrompt(challenge, userSolution) },
+          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents: [
+            { role: "user", parts: [{ text: buildUserPrompt(challenge, userSolution) }] },
           ],
+          generationConfig: {
+            temperature: 0.2,
+            responseMimeType: "application/json",
+            responseSchema: RESPONSE_SCHEMA,
+          },
         }),
       });
     } catch (error) {
-      console.error("Ollama request failed:", error);
+      console.error("Gemini request failed:", error);
       throw new Error("AI_UNAVAILABLE");
     } finally {
       clearTimeout(timeout);
     }
 
     if (!response.ok) {
-      console.error(`Ollama responded with status ${response.status}`);
+      const errorBody = await response.text().catch(() => "");
+      console.error(`Gemini responded with status ${response.status}: ${errorBody}`);
       throw new Error("AI_UNAVAILABLE");
     }
 
     let content: string;
     try {
-      const payload = (await response.json()) as { message?: { content?: string } };
-      content = payload.message?.content ?? "";
+      const payload = (await response.json()) as {
+        candidates?: { content?: { parts?: { text?: string }[] } }[];
+      };
+      content = payload.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
     } catch (error) {
-      console.error("Failed to read Ollama response body:", error);
+      console.error("Failed to read Gemini response body:", error);
       throw new Error("AI_UNAVAILABLE");
     }
 
@@ -143,7 +137,7 @@ function parseEvaluation(rawContent: string): AiEvaluation {
   try {
     parsed = JSON.parse(cleaned);
   } catch (error) {
-    console.error("Ollama returned non-JSON content:", rawContent);
+    console.error("Gemini returned non-JSON content:", rawContent);
     throw new Error("AI_UNAVAILABLE");
   }
 
@@ -157,7 +151,7 @@ function parseEvaluation(rawContent: string): AiEvaluation {
     typeof evaluation !== "string" ||
     evaluation.trim() === ""
   ) {
-    console.error("Ollama returned an invalid evaluation shape:", parsed);
+    console.error("Gemini returned an invalid evaluation shape:", parsed);
     throw new Error("AI_UNAVAILABLE");
   }
 
