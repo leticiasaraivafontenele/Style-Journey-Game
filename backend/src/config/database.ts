@@ -18,3 +18,10 @@ export const serverConfig = {
   port: parseInt(process.env.PORT || "5000"),
   nodeEnv: process.env.NODE_ENV || "development",
 };
+
+export const aiConfig = {
+  geminiApiKey: process.env.GEMINI_API_KEY || "",
+  geminiUrl: process.env.GEMINI_URL || "https://generativelanguage.googleapis.com/v1beta",
+  model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+  timeoutMs: parseInt(process.env.GEMINI_TIMEOUT_MS || "120000"),
+};

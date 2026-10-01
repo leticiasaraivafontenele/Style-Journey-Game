@@ -3,8 +3,9 @@ import { baseGrayImage, baseGreenImage, baseOrangeImage, mapModule1Image, mapMod
 import { mapStrings } from '../strings/pt-br/map';
 import { allModulePhases, type Phase } from '../phases';
 import { useAuth } from '../contexts/AuthContext';
-import StarRating from './StarRating';
+import StarRating, { qualityToRating } from './StarRating';
 import { getAvatarImageById } from '../utils/avatarHelper';
+import { useLevel } from '../hooks/useLevel';
 
 export interface IModules {
   image: string;
@@ -70,14 +71,14 @@ function checkLevelStatus(phaseId: number): {discImage: string, color: string, c
   return { discImage: baseGrayImage, color: 'text-gray-600', canAccess: false, showStars: false, showAvatar: false };
 }
 
-function PhaseDisc({ phase, index, moduleId }: { phase: Phase; index: number; moduleId: number }) {
-  
+function PhaseDisc({ phase, index, moduleId, quality }: { phase: Phase; index: number; moduleId: number; quality: number | null }) {
+
   const navigate = useNavigate();
   const position = getDiscPosition(index);
 
   const {avatarId} = useAuth();
   const avatarImage = getAvatarImageById(avatarId);
-  
+
 
   const {discImage, color, canAccess, showStars, showAvatar} = checkLevelStatus(phase.id);
   return (
@@ -104,7 +105,7 @@ function PhaseDisc({ phase, index, moduleId }: { phase: Phase; index: number; mo
         alt={phase.name}
         className="w-30 h-30 drop-shadow-lg"
       />
-      {showStars && <StarRating className='absolute -bottom-1' rating='perfect'/>}
+      {showStars && <StarRating className='absolute -bottom-1' rating={qualityToRating(quality)}/>}
       <span className={`absolute bottom-13 text-2xl font-bold font-start ${color} drop-shadow text-center`}>
         {phase.id}
       </span>
@@ -113,6 +114,11 @@ function PhaseDisc({ phase, index, moduleId }: { phase: Phase; index: number; mo
 }
 
 export default function MapBackground() {
+  const { levels } = useLevel();
+  const qualityByLevel = new Map<number, number | null>(
+    levels.map(l => [l.level, l.quality ?? null])
+  );
+
   return (
     <div className="w-full bg-lime-500">
       {modules.map((module, index) => {
@@ -129,7 +135,13 @@ export default function MapBackground() {
                 style={{ display: 'block', width: '100%' }}
               />
               {phases.map((phase, phaseIndex) => (
-                <PhaseDisc key={phase.id} phase={phase} index={phaseIndex} moduleId={index + 1} />
+                <PhaseDisc
+                  key={phase.id}
+                  phase={phase}
+                  index={phaseIndex}
+                  moduleId={index + 1}
+                  quality={qualityByLevel.get(phase.id) ?? null}
+                />
               ))}
             </div>
           </div>

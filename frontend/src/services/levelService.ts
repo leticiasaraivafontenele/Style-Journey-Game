@@ -5,6 +5,8 @@ export interface LevelCompleted {
   idUser: number;
   level: number;
   userSolution: string;
+  quality?: number | null;
+  evaluation?: string | null;
 }
 
 export interface SaveLevelPayload {
@@ -17,6 +19,21 @@ export interface UpdateLevelPayload {
   userSolution?: string;
 }
 
+export interface ChallengeContext {
+  property: string;
+  description: string;
+  instructions: string;
+  solution: string;
+  html?: string;
+}
+
+export interface EvaluateLevelPayload {
+  idUser: number;
+  level: number;
+  userSolution: string;
+  challenge: ChallengeContext;
+}
+
 export const levelService = {
   async saveLevel(data: SaveLevelPayload): Promise<LevelCompleted> {
     try {
@@ -24,6 +41,15 @@ export const levelService = {
       return response.data.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Erro ao salvar level');
+    }
+  },
+
+  async evaluateLevel(data: EvaluateLevelPayload): Promise<LevelCompleted> {
+    try {
+      const response = await api.post<{ message: string; data: LevelCompleted }>('/api/levels/evaluate', data);
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Erro ao avaliar resposta');
     }
   },
 

@@ -9,7 +9,9 @@ import { TiArrowBackOutline } from 'react-icons/ti';
 import { logoImage } from '../../assets';
 import { useNavigate } from 'react-router';
 import { usePhase } from '../../hooks/usePhase';
-import StarRating from '../StarRating';
+import StarRating, { qualityToRating } from '../StarRating';
+import ModalEvaluation from '../modal/ModalEvaluation';
+import type { ChallengeContext } from '../../services/levelService';
 
 interface PhaseBaseProps {
   backgroundImage: string;
@@ -18,24 +20,15 @@ interface PhaseBaseProps {
   children?: ReactNode;
   moduleName: string;
   backgroundClassname?: string;
-  /** Called on every input keystroke with the current value. */
   onInputChange?: (value: string) => void;
-  /**
-   * Called with the current input value when the user clicks "Enviar".
-   * Should return true if the answer is correct, false otherwise.
-   */
   onEnviar?: (value: string) => boolean;
-  /**
-   * Called right after evaluation with the submitted selector and the result.
-   * Useful for consumers that need to react to the submission (e.g. board highlighting).
-   */
   onSubmit?: (selector: string, correct: boolean) => void;
-  /** Called when the user clicks "Próxima Fase" after a correct answer. */
   onNextPhase?: () => void;
-  /** Pre-fills the CSS input with the user's previously saved solution. */
   initialInputValue?: string;
-  /** When true, marks the phase as already correct on mount (shows "Próxima Fase" button). */
   initiallyCorrect?: boolean;
+  evaluationContext: ChallengeContext;
+  initialQuality?: number | null;
+  initialEvaluation?: string | null;
 }
 
 type SubmitResult = 'correct' | 'incorrect' | null;
@@ -53,31 +46,57 @@ export default function PhaseBase({
   onNextPhase,
   initialInputValue,
   initiallyCorrect,
+  evaluationContext,
+  initialQuality,
+  initialEvaluation,
 }: PhaseBaseProps) {
   const { avatarId } = useAuth();
   const avatarImage = getAvatarImageById(avatarId);
   const navigate = useNavigate();
-  const {savePhase} = usePhase();
+  const { evaluatePhase } = usePhase();
 
   const [inputValue, setInputValue] = useState(initialInputValue ?? '');
   const [submitResult, setSubmitResult] = useState<SubmitResult>(initiallyCorrect ? 'correct' : null);
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [quality, setQuality] = useState<number | null>(initialQuality ?? null);
+  const [evaluation, setEvaluation] = useState<string | null>(initialEvaluation ?? null);
+  const [showEvalModal, setShowEvalModal] = useState(false);
+  const [evalError, setEvalError] = useState<string | null>(null);
 
   function handleInputChange(value: string) {
     setInputValue(value);
     if (submitResult !== null) setSubmitResult(null);
+    if (evalError !== null) setEvalError(null);
     onInputChange?.(value);
   }
 
-  function handleEnviar() {
-    if (!onEnviar) return;
-    const correct = onEnviar(inputValue);
-    setSubmitResult(correct ? 'correct' : 'incorrect');
+  async function handleAvaliar() {
+    if (!onEnviar || isEvaluating) return;
 
-    if (correct) {
-      savePhase(phase.id, inputValue);
+    setEvalError(null);
+    const correct = onEnviar(inputValue);
+    onSubmit?.(inputValue, correct);
+
+    if (!correct) {
+      setSubmitResult('incorrect');
+      return;
     }
 
-    onSubmit?.(inputValue, correct);
+    setSubmitResult(null);
+    setIsEvaluating(true);
+    try {
+      const result = await evaluatePhase(phase.id, inputValue, evaluationContext);
+      setQuality(result.quality);
+      setEvaluation(result.evaluation);
+      setSubmitResult('correct');
+      setShowEvalModal(true);
+    } catch (err) {
+      setEvalError(
+        err instanceof Error ? err.message : 'Não foi possível avaliar sua resposta. Tente novamente.'
+      );
+    } finally {
+      setIsEvaluating(false);
+    }
   }
 
   const hasInput = inputValue.trim() !== '';
@@ -110,10 +129,14 @@ export default function PhaseBase({
               {moduleName}
             </h1>
             {isCorrect && (
-              <div className=' shadow-lg bg-amber-900 rounded-sm px-2 py-1'>
-                <StarRating rating='perfect'/>
-              </div>
-                
+              <button
+                type='button'
+                title='Ver avaliação'
+                onClick={() => setShowEvalModal(true)}
+                className='shadow-lg bg-amber-900 rounded-sm px-2 py-1 cursor-pointer'
+              >
+                <StarRating rating={qualityToRating(quality)} />
+              </button>
             )}
             <span className="text-base bg-sky-800 font-semibold rounded-sm px-2 text-white uppercase tracking-widest">
               Fase {phase.id}
@@ -160,11 +183,15 @@ export default function PhaseBase({
             />
           </section>
 
-          {submitResult !== null && (
+          {(submitResult !== null || evalError !== null) && (
             <section className='mx-5 mb-1'>
-              {isCorrect ? (
+              {evalError ? (
+                <p className="text-sm font-semibold text-red-700 bg-red-100 border border-red-400 rounded-md px-3 py-2">
+                  {evalError}
+                </p>
+              ) : isCorrect ? (
                 <p className="text-sm font-semibold text-green-700 bg-green-100 border border-green-400 rounded-md px-3 py-2">
-                  Correto! Você selecionou os elementos certos.
+                  Correto! Veja a avaliação da sua solução.
                 </p>
               ) : (
                 <p className="text-sm font-semibold text-red-700 bg-red-100 border border-red-400 rounded-md px-3 py-2">
@@ -175,12 +202,6 @@ export default function PhaseBase({
           )}
 
           <section className='flex self-end gap-2 mr-5'>
-            <button
-              disabled
-              className='bg-sky-800 opacity-40 cursor-not-allowed text-white text-xs font-start font-bold py-3 px-6 rounded-md'
-            >
-              Avaliar
-            </button>
             {isCorrect ? (
               <button
                 onClick={onNextPhase}
@@ -190,11 +211,11 @@ export default function PhaseBase({
               </button>
             ) : (
               <button
-                onClick={handleEnviar}
-                disabled={!hasInput}
+                onClick={handleAvaliar}
+                disabled={!hasInput || isEvaluating}
                 className='bg-yellow-600 hover:bg-yellow-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-start font-bold py-3 px-6 rounded-md transition-colors duration-200 cursor-pointer'
               >
-                Enviar
+                {isEvaluating ? 'Avaliando...' : 'Avaliar'}
               </button>
             )}
           </section>
@@ -223,6 +244,13 @@ export default function PhaseBase({
       >
         {children}
       </div>
+
+      <ModalEvaluation
+        show={showEvalModal}
+        quality={quality}
+        evaluation={evaluation}
+        onClose={() => setShowEvalModal(false)}
+      />
     </div>
   );
 }

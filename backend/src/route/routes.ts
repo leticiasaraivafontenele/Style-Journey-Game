@@ -11,6 +11,7 @@ import {
 } from "../controller/userController.js";
 import {
   saveLevelController,
+  evaluateLevelController,
   getLevelsByUserController,
   getLevelByUserAndLevelController,
   updateLevelController,
@@ -31,6 +32,7 @@ router.put("/users/:id", authenticateToken, updateUserController);
 router.delete("/users/:id", authenticateToken, deleteUserController);
 
 router.post("/levels", authenticateToken, saveLevelController);
+router.post("/levels/evaluate", authenticateToken, evaluateLevelController);
 router.get("/levels/user/:idUser", authenticateToken, getLevelsByUserController);
 router.get("/levels/user/:idUser/level/:level", authenticateToken, getLevelByUserAndLevelController);
 router.put("/levels/:id", authenticateToken, updateLevelController);
